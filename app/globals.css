@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@reference tailwindcss;
+
+/* Subtle Moroccan-like background pattern */
+body {
+  background-color: #f4f1ec;
+  background-image:
+    radial-gradient(circle at 25px 25px, rgba(0,0,0,0.03) 2px, transparent 2px),
+    radial-gradient(circle at 75px 75px, rgba(0,0,0,0.03) 2px, transparent 2px);
+  background-size: 100px 100px;
+}
+
+a { @apply text-inherit; }
+
+.container-page {
+  @apply mx-auto w-full max-w-6xl px-4;
+}
