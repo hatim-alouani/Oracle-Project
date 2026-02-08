@@ -15,11 +15,14 @@ export default function Hero() {
           </p>
 
           <div className="mt-5 flex flex-wrap gap-2">
-            <Link href="/statistics" className="rounded bg-black/5 px-4 py-2 text-[#111] font-semibold">
+            <Link href="/statistics" className="rounded bg-black/5 px-4 py-2 text-[#111] font-semibold hover:bg-black/10 transition-colors">
               View Statistics
             </Link>
-            <Link href="/students" className="rounded bg-black/5 px-4 py-2 text-[#111] font-semibold">
+            <Link href="/students" className="rounded bg-black/5 px-4 py-2 text-[#111] font-semibold hover:bg-black/10 transition-colors">
               Manage Students
+            </Link>
+            <Link href="/classes" className="rounded bg-black/5 px-4 py-2 text-[#111] font-semibold hover:bg-black/10 transition-colors">
+              Manage Classes
             </Link>
           </div>
         </div>
@@ -30,36 +33,36 @@ export default function Hero() {
         <div className="rounded bg-white p-5 shadow-soft">
           <div className="text-sm font-bold">Quick Actions</div>
           <div className="mt-3 grid gap-2 text-sm">
-            <Link className="rounded border border-black/10 px-3 py-2 hover:bg-black/5" href="/attendance">
-              Mark Absences & Lateness
+            <Link className="rounded border border-black/10 px-3 py-2 hover:bg-black/5 transition-colors" href="/students">
+              Record Attendance
             </Link>
-            <Link className="rounded border border-black/10 px-3 py-2 hover:bg-black/5" href="/statistics">
-              Reports & Alerts
+            <Link className="rounded border border-black/10 px-3 py-2 hover:bg-black/5 transition-colors" href="/statistics">
+              View Analytics & Alerts
             </Link>
-            <Link className="rounded border border-black/10 px-3 py-2 hover:bg-black/5" href="/students">
-              Add / Remove Students
+            <Link className="rounded border border-black/10 px-3 py-2 hover:bg-black/5 transition-colors" href="/classes">
+              Add New Class
             </Link>
           </div>
         </div>
 
         <div className="rounded bg-white p-5 shadow-soft">
-          <div className="text-sm font-bold">Indicators</div>
+          <div className="text-sm font-bold">System Status</div>
           <div className="mt-3 grid grid-cols-2 gap-3">
             <div className="rounded bg-black/5 p-3">
-              <div className="text-xs text-black/60">Tracking</div>
-              <div className="font-extrabold">Daily</div>
+              <div className="text-xs text-black/60">Workflows</div>
+              <div className="font-extrabold text-green-600">Active</div>
             </div>
             <div className="rounded bg-black/5 p-3">
-              <div className="text-xs text-black/60">Alerts</div>
-              <div className="font-extrabold">Threshold</div>
+              <div className="text-xs text-black/60">Oracle DB</div>
+              <div className="font-extrabold text-green-600">Connected</div>
             </div>
             <div className="rounded bg-black/5 p-3">
               <div className="text-xs text-black/60">Reports</div>
-              <div className="font-extrabold">Monthly</div>
+              <div className="font-extrabold">Auto-gen</div>
             </div>
             <div className="rounded bg-black/5 p-3">
-              <div className="text-xs text-black/60">Views</div>
-              <div className="font-extrabold">Oracle</div>
+              <div className="text-xs text-black/60">Anomalies</div>
+              <div className="font-extrabold">Monitored</div>
             </div>
           </div>
         </div>
