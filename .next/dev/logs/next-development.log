@@ -1,0 +1,279 @@
+[00:00:01.304] Server  LOG     ✓ Ready in 1009ms
+[00:00:06.629] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:10.332] Browser ERROR   fetchActiveAlerts error: {}
+[00:00:10.332] Browser ERROR   fetchActiveAlerts error: {}
+[00:00:12.687] Browser ERROR   fetchAnomalies error: {}
+[00:00:12.687] Browser ERROR   fetchAnomalies error: {}
+[00:00:14.045] Browser ERROR   fetchMonthlyReport error: {}
+[00:00:14.045] Browser ERROR   fetchMonthlyReport error: {}
+[00:00:16.522] Browser ERROR   fetchActiveAlerts error: {}
+[00:00:16.522] Browser ERROR   fetchActiveAlerts error: {}
+[00:00:17.556] Browser ERROR   fetchClasses error: {}
+[00:00:17.556] Browser ERROR   fetchClasses error: {}
+[00:00:19.735] Browser ERROR   fetchDashboardStats error: {}
+[00:00:19.735] Browser ERROR   fetchDashboardStats error: {}
+[00:51:00.324] Server  LOG     ✓ Compiled in 69ms
+[00:51:19.249] Browser ERROR   Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
+
+Check the render method of `ClassesPage`. 
+[00:51:39.117] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:51:39.316] Browser ERROR   fetchClasses error: {}
+[00:51:48.047] Server  LOG     ✓ Compiled in 27ms
+[00:51:48.268] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:51:48.675] Browser ERROR   Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
+
+Check the render method of `ClassesPage`. 
+[00:52:24.557] Server  LOG     ✓ Compiled in 30ms
+[00:53:28.801] Server  LOG     ✓ Compiled in 41ms
+[00:53:53.861] Server  LOG     ✓ Compiled in 23ms
+[00:54:18.644] Server  LOG     ✓ Compiled in 26ms
+[00:54:39.351] Server  LOG     ✓ Compiled in 25ms
+[00:54:59.815] Browser ERROR   fetchActiveAlerts error: {}
+[00:54:59.815] Browser ERROR   fetchActiveAlerts error: {}
+[00:55:03.563] Browser ERROR   Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
+
+Check the render method of `select`.  It was passed a child from Select.
+[00:55:03.563] Browser ERROR   Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
+
+Check the render method of `AnomaliesPage`. 
+[00:55:08.301] Browser ERROR   uncaughtError: TypeError: Cannot read properties of undefined (reading 'toFixed')
+[00:57:24.290] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:57:24.294] Server  LOG     ✓ Compiled in 48ms
+[00:57:24.484] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:57:24.721] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:57:25.744] Browser ERROR   uncaughtError: TypeError: Cannot read properties of undefined (reading 'toFixed')
+[00:57:31.369] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:57:31.663] Browser ERROR   uncaughtError: TypeError: Cannot read properties of undefined (reading 'toFixed')
+[01:03:15.924] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[01:03:16.015] Server  LOG     ✓ Compiled in 155ms
+[01:03:16.355] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:03:17.629] Browser ERROR   uncaughtError: TypeError: Cannot read properties of undefined (reading 'toFixed')
+[01:03:54.566] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[01:03:54.633] Server  LOG     ✓ Compiled in 62ms
+[01:03:54.887] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:03:55.891] Browser ERROR   uncaughtError: TypeError: Cannot read properties of undefined (reading 'toFixed')
+[01:06:44.042] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[01:06:44.063] Server  LOG     ✓ Compiled in 31ms
+[01:06:44.398] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:28:45.503] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:28:52.123] Browser ERROR   Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
+
+Check the render method of `tbody`.  It was passed a child from StatisticsPage.
+[01:28:56.600] Browser ERROR   fetchDashboardStats error: {}
+[01:28:56.600] Browser ERROR   fetchDashboardStats error: {}
+[01:29:27.791] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:29:32.957] Browser ERROR   fetchDashboardStats error: {}
+[01:29:32.957] Browser ERROR   fetchDashboardStats error: {}
+[01:29:52.511] Browser ERROR   Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
+
+Check the render method of `tbody`.  It was passed a child from StatisticsPage.
+[01:31:30.819] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:33:00.140] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:33:37.644] Browser ERROR   fetchDashboardStats error: {}
+[01:33:37.644] Browser ERROR   fetchDashboardStats error: {}
+[01:34:09.131] Browser ERROR   fetchDashboardStats error: {}
+[01:34:09.131] Browser ERROR   fetchDashboardStats error: {}
+[01:36:05.531] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:36:35.691] Browser ERROR   fetchDashboardStats error: {}
+[01:36:35.691] Browser ERROR   fetchDashboardStats error: {}
+[01:36:51.057] Server  LOG     ✓ Compiled in 59ms
+[01:39:03.733] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:39:33.293] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:39:45.311] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:41:06.097] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:41:11.718] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:41:36.952] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:41:40.740] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:41:44.277] Server  LOG     ✓ Compiled in 30ms
+[01:42:58.872] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:43:36.042] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:43:39.677] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:45:10.977] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:45:25.113] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:45:37.721] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:46:47.674] Server  LOG     ✓ Compiled in 87ms
+[01:47:48.980] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:47:52.902] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:48:15.882] Server  LOG     ✓ Compiled in 29ms
+[01:48:26.748] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:48:31.002] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:48:45.829] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:48:55.810] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:49:00.405] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:49:06.427] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:49:11.806] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:49:32.500] Browser ERROR   Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
+
+Check the render method of `tbody`.  It was passed a child from StatisticsPage.
+[01:50:55.017] Browser ERROR   fetchDashboardStats error: {}
+[01:50:55.017] Browser ERROR   fetchDashboardStats error: {}
+[01:55:45.885] Server  LOG     ✓ Compiled in 195ms
+[01:56:17.892] Server  LOG     ✓ Compiled in 83ms
+[02:03:22.169] Server  LOG     ✓ Compiled in 59ms
+[02:03:44.382] Server  LOG     ✓ Compiled in 28ms
+[02:04:08.125] Server  LOG     ✓ Compiled in 66ms
+[02:05:10.256] Server  LOG     ✓ Compiled in 34ms
+[02:05:11.074] Browser ERROR   ./app/students/[id]/page.tsx:50:3
+Parsing ecmascript source code failed
+   48 |   const presentArea = createAreaPath(data.map(d => d.present));
+   49 |
+>  50 |   return (
+      |   ^^^^^^^^
+>  51 |     <div className="overflow-x-auto">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  52 |       <svg viewBox={`0 0 ${width} ${height}`} className="w-full">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  53 |         <defs>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  54 |           <linearGradient id="studentAbsencesGradient" x1="0" x2="0" y1="0" y2="1">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  55 |             <stop offset="0%" stopColor="#ef4444" stopOpacity="0.4" />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  56 |             <stop offset="100%" stopColor="#ef4444" stopOpacity="0.05" />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  57 |           </linearGradient>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  58 |           <linearGradient id="studentLateGradient" x1="0" x2="0" y1="0" y2="1">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  59 |             <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.4" />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  60 |             <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.05" />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  61 |           </linearGradient>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  62 |           <linearGradient id="studentPresentGradient" x1="0" x2="0" y1="0" y2="1">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  63 |             <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  64 |             <stop offset="100%" stopColor="#10b981" stopOpacity="0.05" />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  65 |           </linearGradient>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  66 |         </defs>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  67 |
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  68 |         {/* Grid lines */}
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  69 |         {[0, 0.5, 1].map((fraction) => {
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  70 |           const y = padding + chartHeight * (1 - fraction);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  71 |           return (
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  72 |             <g key={fraction}>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  73 |               <line x1={padding} y1={y} x2={width - padding} y2={y} stroke="#e5e7eb" strokeWidth="1" />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  74 |               <text x={padding - 8} y={y + 4} textAnchor="end" fontSize="11" fill="#6b7280">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  75 |                 {Math.round(maxValue * fraction)}
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  76 |               </text>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  77 |             </g>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  78 |           );
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  79 |         })}
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  80 |
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  81 |         {/* X-axis labels */}
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  82 |         {data.map((d, i) => (
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  83 |           <text key={i} x={padding + i * xStep} y={height - padding + 18} textAnchor="middle" fontSize="10" fill="#6b7280">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  84 |             {d.label}
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  85 |           </text>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  86 |         ))}
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  87 |
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  88 |         {/* Area fills */}
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  89 |         <path d={presentArea} fill="url(#studentPresentGradient)" />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  90 |         <path d={lateArea} fill="url(#studentLateGradient)" />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  91 |         <path d={absencesArea} fill="url(#studentAbsencesGradient)" />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  92 |
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  93 |         {/* Lines */}
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  94 |         <path 
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  95 |           d={data.map((d, i) => `${i === 0 ? 'M' : 'L'} ${padding + i * xStep} ${getY(d.present)}`).join(' ')} 
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  96 |           fill="none" stroke="#10b981" strokeWidth="2.5" 
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  97 |         />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  98 |         <path 
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  99 |           d={data.map((d, i) => `${i === 0 ? 'M' : 'L'} ${padding + i * xStep} ${getY(d.late)}`).join(' ')} 
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 100 |           fill="none" stroke="#f59e0b" strokeWidth="2.5" 
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 101 |         />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 102 |         <path 
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 103 |           d={data.map((d, i) => `${i === 0 ? 'M' : 'L'} ${padding + i * xStep} ${getY(d.absences)}`).join(' ')} 
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 104 |           fill="none" stroke="#ef4444" strokeWidth="2.5" 
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 105 |         />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 106 |
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 107 |         {/* Points */}
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 108 |         {data.map((d, i) => (
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 109 |           <g key={i}>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 110 |             <circle cx={padding + i * xStep} cy={getY(d.present)} r="3.5" fill="#10b981" stroke="white" strokeWidth="2" />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 111 |             <circle cx={padding + i * xStep} cy={getY(d.late)} r="3.5" fill="#f59e0b" stroke="white" strokeWidth="2" />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 112 |             <circle cx={padding + i * xStep} cy={getY(d.absences)} r="3.5" fill="#ef4444" stroke="white" strokeWidth="2" />
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 113 |           </g>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 114 |         ))}
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 115 |       </svg>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 116 |     </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 117 |   );
+      | ^^^^^
+  118 | }
+  119 |
+  120 | function Avatar({ name }: { name: string }) {
+
+Return statement is not allowed here
+
+Import traces:
+  Client Component Browser:
+    ./app/students/[id]/page.tsx [Client Component Browser]
+    ./app/students/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/students/[id]/page.tsx [Client Component SSR]
+    ./app/students/[id]/page.tsx [Server Component]
+[02:05:35.342] Server  LOG     ✓ Compiled in 28ms
+[02:05:52.615] Server  LOG     ✓ Compiled in 25ms
+[02:05:57.966] Server  LOG     ✓ Compiled in 31ms
+[02:07:10.517] Browser ERROR   fetchDashboardStats error: {}
+[02:07:10.517] Browser ERROR   fetchDashboardStats error: {}
+[02:07:37.420] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:07:46.739] Browser ERROR   fetchDashboardStats error: {}
+[02:07:46.739] Browser ERROR   fetchDashboardStats error: {}
+[02:08:09.212] Server  LOG     ✓ Compiled in 80ms
+[02:08:10.797] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold

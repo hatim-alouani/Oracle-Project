@@ -8,6 +8,7 @@ import Toast from "@/components/Toast";
 import { fetchStudents } from "@/lib/api";
 import { Student } from "@/lib/types";
 import { fullName } from "@/lib/utils";
+import AreaChart from "@/components/AreaChart";
 
 const ABSENCE_ALERT_THRESHOLD = 5;
 
@@ -71,7 +72,7 @@ export default function StudentProfilePage() {
       setToast(null);
       try {
         const list = await fetchStudents();
-        const found = list.find((s) => s.student_id === studentId) ?? null;
+        const found = list.find((s) => s.studentId === studentId) ?? null;
         setStudent(found);
 
         if (!found) {
@@ -85,12 +86,24 @@ export default function StudentProfilePage() {
     })();
   }, [studentId]);
 
-  const absences = (student as any)?.absence_count ?? 0;
-  const late = (student as any)?.late_count ?? 0;
-  const dayCheck = (student as any)?.day_check ?? 0;
+  const absences = student?.absenceCount ?? 0;
+  const late = student?.lateCount ?? 0;
+  const dayCheck = student?.dayCheck ?? 0;
 
   const isAlert = absences >= ABSENCE_ALERT_THRESHOLD;
   const daysLeft = Math.max(0, ABSENCE_ALERT_THRESHOLD - absences);
+
+  // Prepare chart data (estimated weekly progression)
+  const chartData = useMemo(() => {
+    const estimatedPresent = Math.max(0, 20 - absences - late);
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return days.map((day, i) => ({
+      label: day,
+      absences: Math.round((absences / 7) * (i + 1)),
+      late: Math.round((late / 7) * (i + 1)),
+      present: Math.round((estimatedPresent / 7) * (i + 1)),
+    }));
+  }, [absences, late]);
 
   return (
     <div>
@@ -210,28 +223,57 @@ export default function StudentProfilePage() {
               )}
             </div>
 
-            <div className="mt-6 grid gap-6 md:grid-cols-2">
-              <ProgressBar
-                label="Absence Progress (towards alert)"
-                value={absences}
-                max={ABSENCE_ALERT_THRESHOLD}
-              />
+            <div className="mt-6 grid gap-6">
+              {/* Attendance Trend Chart */}
+              <div className="rounded border border-black/10 p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <div className="text-sm font-extrabold">Attendance Trend</div>
+                    <div className="text-xs text-black/60">Estimated weekly progression</div>
+                  </div>
+                  
+                  {/* Legend */}
+                  <div className="flex flex-wrap gap-3 text-xs">
+                    <div className="flex items-center gap-1">
+                      <div className="w-3 h-3 rounded bg-green-500"></div>
+                      <span className="font-bold text-green-700">Present</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-3 h-3 rounded bg-yellow-500"></div>
+                      <span className="font-bold text-yellow-700">Late</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-3 h-3 rounded bg-red-500"></div>
+                      <span className="font-bold text-red-700">Absent</span>
+                    </div>
+                  </div>
+                </div>
 
-              <ProgressBar
-                label="Late Progress (simple scale)"
-                value={late}
-                max={10}
-              />
+                <AreaChart data={chartData} height={250} width={600} />
+              </div>
 
-              <div className="rounded border border-black/10 p-4 md:col-span-2">
+              <div className="grid gap-6 md:grid-cols-2">
+                <ProgressBar
+                  label="Absence Progress (towards alert)"
+                  value={absences}
+                  max={ABSENCE_ALERT_THRESHOLD}
+                />
+
+                <ProgressBar
+                  label="Late Progress (simple scale)"
+                  value={late}
+                  max={10}
+                />
+              </div>
+
+              <div className="rounded border border-black/10 p-4">
                 <div className="text-sm font-extrabold">How alerts work</div>
                 <div className="mt-2 text-sm text-black/70">
                   Rule: <span className="font-extrabold">absences ≥ 5</span>{" "}
                   triggers an alert.
                 </div>
                 <div className="mt-2 text-sm text-black/60">
-                  Later improvement: store attendance history by date to generate
-                  monthly/semester reports.
+                  Chart shows estimated daily progression based on current totals.
                 </div>
               </div>
             </div>

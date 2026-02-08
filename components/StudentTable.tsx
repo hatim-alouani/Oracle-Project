@@ -13,19 +13,19 @@ export default function StudentTable({
   onChange: (next: Record<number, AttendanceRow>) => void;
 }) {
   function setStatus(id: number, status: AttendanceStatus) {
-    const prev = value[id] ?? { student_id: id, status: "PRESENT" as const };
+    const prev = value[id] ?? { studentId: id, status: "PRESENT" as const };
     const next: AttendanceRow = { ...prev, status };
-    if (status !== "LATE") next.minutes_late = null;
+    if (status !== "LATE") next.minutesLate = null;
     onChange({ ...value, [id]: next });
   }
 
   function setMinutes(id: number, minutes: number) {
-    const prev = value[id] ?? { student_id: id, status: "LATE" as const };
-    onChange({ ...value, [id]: { ...prev, status: "LATE", minutes_late: minutes } });
+    const prev = value[id] ?? { studentId: id, status: "LATE" as const };
+    onChange({ ...value, [id]: { ...prev, status: "LATE", minutesLate: minutes } });
   }
 
   function setReason(id: number, reason: string) {
-    const prev = value[id] ?? { student_id: id, status: "PRESENT" as const };
+    const prev = value[id] ?? { studentId: id, status: "PRESENT" as const };
     onChange({ ...value, [id]: { ...prev, reason } });
   }
 
@@ -43,9 +43,9 @@ export default function StudentTable({
           </thead>
           <tbody>
             {students.map((s) => {
-              const row = value[s.student_id] ?? { student_id: s.student_id, status: "PRESENT" as const };
+              const row = value[s.studentId] ?? { studentId: s.studentId, status: "PRESENT" as const };
               return (
-                <tr key={s.student_id} className="border-t border-black/5">
+                <tr key={s.studentId} className="border-t border-black/5">
                   <td className="p-3">
                     <div className="font-semibold">{fullName(s)}</div>
                     <div className="text-xs text-black/50">{s.email ?? "-"}</div>
@@ -57,7 +57,7 @@ export default function StudentTable({
                         <button
                           key={st}
                           type="button"
-                          onClick={() => setStatus(s.student_id, st)}
+                          onClick={() => setStatus(s.studentId, st)}
                           className={[
                             "rounded px-3 py-1.5 border text-xs font-extrabold",
                             row.status === st
@@ -76,8 +76,8 @@ export default function StudentTable({
                       type="number"
                       min={0}
                       disabled={row.status !== "LATE"}
-                      value={row.status === "LATE" ? (row.minutes_late ?? 0) : ""}
-                      onChange={(e) => setMinutes(s.student_id, Number(e.target.value || 0))}
+                      value={row.status === "LATE" ? (row.minutesLate ?? 0) : ""}
+                      onChange={(e) => setMinutes(s.studentId, Number(e.target.value || 0))}
                       className="w-28 rounded border border-black/10 px-2 py-2 disabled:bg-black/5"
                       placeholder="0"
                     />
@@ -87,7 +87,7 @@ export default function StudentTable({
                     <input
                       type="text"
                       value={row.reason ?? ""}
-                      onChange={(e) => setReason(s.student_id, e.target.value)}
+                      onChange={(e) => setReason(s.studentId, e.target.value)}
                       className="w-full rounded border border-black/10 px-3 py-2"
                       placeholder="Optional"
                     />

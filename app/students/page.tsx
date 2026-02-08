@@ -89,11 +89,18 @@ export default function StudentsPage() {
     setLoading(true);
     setToast(null);
     try {
-      await markStudentPresent({ student_id: student.student_id });
-      setMarkedStudents((prev) => new Set(prev).add(student.student_id));
-      await reload(); // so day_check updates immediately
+      // Immediately mark as processed to disable buttons
+      setMarkedStudents((prev) => new Set(prev).add(student.studentId));
+      await markStudentPresent({ student_id: student.studentId });
+      await reload(); // so dayCheck updates immediately
       setToast({ type: "ok", msg: "Student marked as present." });
     } catch (e: any) {
+      // If failed, remove from marked set
+      setMarkedStudents((prev) => {
+        const next = new Set(prev);
+        next.delete(student.studentId);
+        return next;
+      });
       setToast({ type: "err", msg: e?.message ?? "Failed to mark present" });
     } finally {
       setLoading(false);
@@ -104,11 +111,18 @@ export default function StudentsPage() {
     setLoading(true);
     setToast(null);
     try {
-      await markStudentLate({ student_id: student.student_id });
-      setMarkedStudents((prev) => new Set(prev).add(student.student_id));
+      // Immediately mark as processed to disable buttons
+      setMarkedStudents((prev) => new Set(prev).add(student.studentId));
+      await markStudentLate({ student_id: student.studentId });
       await reload();
       setToast({ type: "ok", msg: "Student marked as late." });
     } catch (e: any) {
+      // If failed, remove from marked set
+      setMarkedStudents((prev) => {
+        const next = new Set(prev);
+        next.delete(student.studentId);
+        return next;
+      });
       setToast({ type: "err", msg: e?.message ?? "Failed to mark late" });
     } finally {
       setLoading(false);
@@ -119,11 +133,18 @@ export default function StudentsPage() {
     setLoading(true);
     setToast(null);
     try {
-      await markStudentAbsent({ student_id: student.student_id });
-      setMarkedStudents((prev) => new Set(prev).add(student.student_id));
+      // Immediately mark as processed to disable buttons
+      setMarkedStudents((prev) => new Set(prev).add(student.studentId));
+      await markStudentAbsent({ student_id: student.studentId });
       await reload();
       setToast({ type: "ok", msg: "Student marked as absent." });
     } catch (e: any) {
+      // If failed, remove from marked set
+      setMarkedStudents((prev) => {
+        const next = new Set(prev);
+        next.delete(student.studentId);
+        return next;
+      });
       setToast({ type: "err", msg: e?.message ?? "Failed to mark absent" });
     } finally {
       setLoading(false);
@@ -189,23 +210,23 @@ export default function StudentsPage() {
           {/* No header row (as requested) */}
           <div className="divide-y divide-black/5">
             {students.map((s) => {
-              const dayCheckDisabled = (s as any).day_check === 1; // from oracle_course
-              const isMarked = markedStudents.has(s.student_id);
+              const dayCheckDisabled = s.dayCheck === 1;
+              const isMarked = markedStudents.has(s.studentId);
               const buttonsDisabled = dayCheckDisabled || isMarked || loading;
 
-              const abs = (s as any).absence_count ?? 0;
-              const late = (s as any).late_count ?? 0;
+              const abs = s.absenceCount ?? 0;
+              const late = s.lateCount ?? 0;
               const isAlert = abs >= 5;
 
               return (
-                <div key={s.student_id} className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div key={s.studentId} className="p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-3 min-w-0">
-                    <Link href={`/students/${s.student_id}`} className="shrink-0">
+                    <Link href={`/students/${s.studentId}`} className="shrink-0">
                       <Avatar name={fullName(s)} />
                     </Link>
 
                     <div className="min-w-0">
-                      <Link href={`/students/${s.student_id}`} className="block truncate font-extrabold hover:underline">
+                      <Link href={`/students/${s.studentId}`} className="block truncate font-extrabold hover:underline">
                         {fullName(s)}
                       </Link>
                       <div className="truncate text-xs text-black/60">{s.email ?? "-"}</div>
@@ -263,7 +284,7 @@ export default function StudentsPage() {
                     </button>
 
                     <button
-                      onClick={() => onRemove(s.student_id)}
+                      onClick={() => onRemove(s.studentId)}
                       disabled={loading}
                       className="rounded border border-red-600/30 bg-red-50 px-3 py-2 text-xs font-extrabold text-red-700 hover:bg-red-100 disabled:opacity-60"
                     >

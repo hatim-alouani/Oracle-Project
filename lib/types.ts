@@ -1,24 +1,31 @@
-export type Student = {
-  student_id: number;
-  first_name: string;
-  last_name: string;
-  email?: string | null;
-  absence_count?: number;
-  late_count?: number;
-  day_check?: number;
-};
+// Re-export canonical types from mappers
+export type {
+  Student,
+  ClassItem,
+  AttendanceRecord,
+  AlertItem,
+  Enrollment,
+  AlertThreshold,
+  AnomalyPattern,
+  MonthlyAttendanceRow,
+  SemesterKpiRow,
+  ClassAttendanceRow,
+  StudentRiskRow,
+  DashboardStats,
+} from "./mappers";
 
+// Legacy/compatibility types
 export type AttendanceStatus = "PRESENT" | "ABSENT" | "LATE";
 
 export type AttendanceRow = {
-  student_id: number;
+  studentId: number;
   status: AttendanceStatus;
-  minutes_late?: number | null;
+  minutesLate?: number | null;
   reason?: string | null;
 };
 
 export type AttendancePayload = {
-  date: string;          // YYYY-MM-DD
-  class_id?: number | null; // optional if you don't manage classes yet
+  date: string; // YYYY-MM-DD
+  classId?: number | null;
   rows: AttendanceRow[];
 };

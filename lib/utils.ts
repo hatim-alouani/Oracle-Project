@@ -6,6 +6,6 @@ export function todayISO(): string {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-export function fullName(s: { first_name: string; last_name: string }) {
-  return `${s.first_name} ${s.last_name}`.trim();
+export function fullName(s: { firstName: string; lastName: string }) {
+  return `${s.firstName} ${s.lastName}`.trim();
 }
