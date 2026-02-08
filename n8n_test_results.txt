@@ -1,0 +1,26 @@
+Starting n8n Webhook Connectivity Test.....
+
+✅ getStudents: SUCCESS (200)
+   Data received: Array, Count: 4
+   First 5 IDs: [4,11,12,13]
+---
+❌ getStatistics: FAILED (404 - Not Found)
+---
+✅ getClasses: SUCCESS (200)
+   Data received: Array, Count: 3
+---
+✅ getMonthlyReport: SUCCESS (200)
+   Data received: Array, Count: 1
+---
+✅ getSemesterKPIs: SUCCESS (200)
+   Data received: Array, Count: 1
+---
+✅ getAlerts: SUCCESS (200)
+   ⚠️ Response was not JSON
+---
+✅ getAnomalies: SUCCESS (200)
+   Data received: Array, Count: 1
+---
+✅ getRiskAssessment: SUCCESS (200)
+   Data received: Array, Count: 4
+---
