@@ -216,20 +216,16 @@ export default function ReportsPage() {
       {/* Semester KPIs */}
       {activeReport === "semester" && (
         <>
-          <Card
-            title="Export"
-            className="mb-6"
-            actions={
-              <Button
-                onClick={() => exportToCSV(semesterData, "semester-kpis")}
-                variant="primary"
-                size="sm"
-                disabled={semesterData.length === 0}
-              >
-                Export CSV
-              </Button>
-            }
-          />
+          <div className="mb-6 flex justify-end">
+            <Button
+              onClick={() => exportToCSV(semesterData, "semester-kpis")}
+              variant="primary"
+              size="sm"
+              disabled={semesterData.length === 0}
+            >
+              Export CSV
+            </Button>
+          </div>
 
           {loading ? (
             <LoadingSpinner />
@@ -293,20 +289,16 @@ export default function ReportsPage() {
       {/* Risk Assessment */}
       {activeReport === "risk" && (
         <>
-          <Card
-            title="Export"
-            className="mb-6"
-            actions={
-              <Button
-                onClick={() => exportToCSV(riskData, "risk-assessment")}
-                variant="primary"
-                size="sm"
-                disabled={riskData.length === 0}
-              >
-                Export CSV
-              </Button>
-            }
-          />
+          <div className="mb-6 flex justify-end">
+            <Button
+              onClick={() => exportToCSV(riskData, "risk-assessment")}
+              variant="primary"
+              size="sm"
+              disabled={riskData.length === 0}
+            >
+              Export CSV
+            </Button>
+          </div>
 
           {loading ? (
             <LoadingSpinner />

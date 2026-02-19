@@ -19,26 +19,35 @@ import {
   toNumberSafe,
 } from "./mappers";
 
-const ENDPOINTS = {
-  // ✅ Existing working endpoints
-  getStudents: "https://alouanihatim.app.n8n.cloud/webhook/194f2a4c-aa88-45c9-9841-4b73b0278374",
-  addStudent: "https://alouanihatim.app.n8n.cloud/webhook/31729320-0f37-42b1-bcbe-f2df9fde263e",
-  removeStudent: "https://alouanihatim.app.n8n.cloud/webhook/ba4b4f11-0645-40f5-9202-eb6e83fdcad1",
-  studentAbsence: "https://alouanihatim.app.n8n.cloud/webhook/a500d3a1-5755-4ac8-9932-d736a9cf1ddb",
-  studentLate: "https://alouanihatim.app.n8n.cloud/webhook/afcee359-0256-4e46-a4fb-32628f0d08d9",
-  studentPresent: "https://alouanihatim.app.n8n.cloud/webhook/cc0f7433-0ec9-4850-8804-37b99af5e7d1",
-  getStatistics: "https://alouanihatim.app.n8n.cloud/webhook/194f2a4c-aa88-45c9-9841-4b73b0278374",
+// Backend API base URL - use relative paths for Next.js API routes
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
-  // 🔴 Placeholder endpoints (update with real URLs when n8n workflows are ready)
-  getClasses: "https://alouanihatim.app.n8n.cloud/webhook/classes",
-  addClass: "https://alouanihatim.app.n8n.cloud/webhook/add-class",
-  enrollStudent: "https://alouanihatim.app.n8n.cloud/webhook/enroll-student",
-  getAlerts: "https://alouanihatim.app.n8n.cloud/webhook/alerts",
-  getActiveAlerts: "https://alouanihatim.app.n8n.cloud/webhook/alerts",
-  getAnomalies: "https://alouanihatim.app.n8n.cloud/webhook/anomalies",
-  getRiskAssessment: "https://alouanihatim.app.n8n.cloud/webhook/risk-assessment",
-  getSemesterKpis: "https://alouanihatim.app.n8n.cloud/webhook/semester-kpis",
-  getMonthlyReport: "https://alouanihatim.app.n8n.cloud/webhook/monthly-report",
+const ENDPOINTS = {
+  // Student endpoints
+  getStudents: `${API_BASE_URL}/api/students`,
+  addStudent: `${API_BASE_URL}/api/students`,
+  removeStudent: `${API_BASE_URL}/api/students/remove`,
+  studentAbsence: `${API_BASE_URL}/api/attendance/absent`,
+  studentLate: `${API_BASE_URL}/api/attendance/late`,
+  studentPresent: `${API_BASE_URL}/api/attendance/present`,
+  
+  // Class endpoints
+  getClasses: `${API_BASE_URL}/api/classes`,
+  addClass: `${API_BASE_URL}/api/classes`,
+  enrollStudent: `${API_BASE_URL}/api/classes/enroll`,
+  
+  // Alert endpoints
+  getAlerts: `${API_BASE_URL}/api/alerts`,
+  getActiveAlerts: `${API_BASE_URL}/api/alerts/active`,
+  
+  // Anomaly endpoints
+  getAnomalies: `${API_BASE_URL}/api/anomalies`,
+  
+  // Report & Statistics endpoints
+  getStatistics: `${API_BASE_URL}/api/statistics`,
+  getRiskAssessment: `${API_BASE_URL}/api/reports/risk-assessment`,
+  getSemesterKpis: `${API_BASE_URL}/api/reports/semester-kpis`,
+  getMonthlyReport: `${API_BASE_URL}/api/reports/monthly`,
 };
 
 async function safeJson(res: Response) {
