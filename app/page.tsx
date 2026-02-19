@@ -45,14 +45,25 @@ export default function Page() {
     <div>
       <Hero />
 
-      <SectionTitle title="Dashboard" subtitle="Overview of attendance analytics and system status." />
+      <div className="mb-8">
+        <div className="mb-2">
+          <h1 className="text-4xl font-bold text-gray-900 bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+            Dashboard
+          </h1>
+          <p className="mt-2 text-lg text-gray-600">
+            Overview of attendance analytics and system status
+          </p>
+        </div>
+      </div>
 
       {loading ? (
-        <LoadingSpinner />
+        <div className="flex justify-center py-12">
+          <LoadingSpinner />
+        </div>
       ) : (
         <>
           {/* Stats Cards */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-12">
             <StatCard
               label="Total Students"
               value={stats?.totalStudents ?? 0}
@@ -96,21 +107,61 @@ export default function Page() {
           </div>
 
           {/* Quick Actions */}
-          <SectionTitle title="Quick Actions" subtitle="Access key features quickly." />
+          <div className="mb-12">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Quick Actions</h2>
+              <p className="mt-1 text-gray-600">Access key features quickly</p>
+            </div>
 
-          <div className="grid gap-4 md:grid-cols-3 mb-8">
-            <Link href="/students" className="rounded bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 shadow-lg hover:shadow-xl transition">
-              <div className="text-lg font-extrabold">Manage Students</div>
-              <div className="text-sm opacity-90 mt-2">Add, remove, and mark attendance</div>
-            </Link>
-            <Link href="/alerts" className="rounded bg-gradient-to-br from-red-500 to-red-600 text-white p-6 shadow-lg hover:shadow-xl transition">
-              <div className="text-lg font-extrabold">View Alerts</div>
-              <div className="text-sm opacity-90 mt-2">Monitor attendance alerts</div>
-            </Link>
-            <Link href="/reports" className="rounded bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 shadow-lg hover:shadow-xl transition">
-              <div className="text-lg font-extrabold">Generate Reports</div>
-              <div className="text-sm opacity-90 mt-2">Monthly, semester, and risk reports</div>
-            </Link>
+            <div className="grid gap-6 md:grid-cols-3">
+              <Link 
+                href="/students" 
+                className="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/60 backdrop-blur-xl shadow-xl shadow-black/10 transition-all duration-300 hover:shadow-2xl hover:shadow-black/20 hover:-translate-y-1"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-blue-600/20"></div>
+                <div className="relative p-8">
+                  <div className="mb-4 rounded-xl bg-blue-100 w-12 h-12 flex items-center justify-center">
+                    <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <div className="text-xl font-bold text-gray-900 group-hover:text-blue-700 transition-colors">Manage Students</div>
+                  <div className="text-sm text-gray-600 mt-2">Add, remove, and mark attendance</div>
+                </div>
+              </Link>
+              
+              <Link 
+                href="/alerts" 
+                className="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/60 backdrop-blur-xl shadow-xl shadow-black/10 transition-all duration-300 hover:shadow-2xl hover:shadow-black/20 hover:-translate-y-1"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-red-500/20 to-red-600/20"></div>
+                <div className="relative p-8">
+                  <div className="mb-4 rounded-xl bg-red-100 w-12 h-12 flex items-center justify-center">
+                    <svg className="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                  </div>
+                  <div className="text-xl font-bold text-gray-900 group-hover:text-red-700 transition-colors">View Alerts</div>
+                  <div className="text-sm text-gray-600 mt-2">Monitor attendance alerts</div>
+                </div>
+              </Link>
+              
+              <Link 
+                href="/reports" 
+                className="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/60 backdrop-blur-xl shadow-xl shadow-black/10 transition-all duration-300 hover:shadow-2xl hover:shadow-black/20 hover:-translate-y-1"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-purple-600/20"></div>
+                <div className="relative p-8">
+                  <div className="mb-4 rounded-xl bg-purple-100 w-12 h-12 flex items-center justify-center">
+                    <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                  </div>
+                  <div className="text-xl font-bold text-gray-900 group-hover:text-purple-700 transition-colors">Generate Reports</div>
+                  <div className="text-sm text-gray-600 mt-2">Monthly, semester, and risk reports</div>
+                </div>
+              </Link>
+            </div>
           </div>
 
           {/* Recent Anomalies */}
@@ -207,6 +258,14 @@ export default function Page() {
               <div className="p-5">
                 <div className="text-sm font-extrabold">Reports</div>
                 <div className="text-sm text-black/60 mt-1">Generate and export detailed reports.</div>
+              </div>
+            </Link>
+
+            <Link href="/settings" className="rounded bg-white shadow-soft overflow-hidden hover:translate-y-[-2px] transition">
+              <div className="h-28 bg-gradient-to-r from-yellow-500/25 to-yellow-500/10" />
+              <div className="p-5">
+                <div className="text-sm font-extrabold">Settings</div>
+                <div className="text-sm text-black/60 mt-1">Configure alert thresholds and rules.</div>
               </div>
             </Link>
           </div>

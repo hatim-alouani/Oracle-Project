@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import SectionTitle from "@/components/SectionTitle";
 import Toast from "@/components/Toast";
-import { fetchStudents } from "@/lib/api";
-import { Student } from "@/lib/types";
+import { fetchStudents, fetchAttendanceHistory } from "@/lib/api";
+import { Student, AttendanceRecord } from "@/lib/types";
 import { fullName } from "@/lib/utils";
 import AreaChart from "@/components/AreaChart";
 
@@ -59,6 +59,7 @@ export default function StudentProfilePage() {
   const studentId = Number(params?.id);
 
   const [student, setStudent] = useState<Student | null>(null);
+  const [history, setHistory] = useState<AttendanceRecord[]>([]);
   const [toast, setToast] = useState<{ type: "ok" | "err"; msg: string } | null>(
     null
   );
@@ -71,9 +72,13 @@ export default function StudentProfilePage() {
       setLoading(true);
       setToast(null);
       try {
-        const list = await fetchStudents();
+        const [list, historyData] = await Promise.all([
+          fetchStudents(),
+          fetchAttendanceHistory({ student_id: studentId, limit: 30 }),
+        ]);
         const found = list.find((s) => s.studentId === studentId) ?? null;
         setStudent(found);
+        setHistory(historyData);
 
         if (!found) {
           setToast({ type: "err", msg: "Student not found." });
@@ -276,6 +281,64 @@ export default function StudentProfilePage() {
                   Chart shows estimated daily progression based on current totals.
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* ATTENDANCE HISTORY */}
+          <div className="lg:col-span-12 rounded bg-white shadow-soft p-6">
+            <div className="text-sm font-extrabold mb-4">Attendance History</div>
+            {history.length === 0 ? (
+              <div className="text-black/60 text-sm">No attendance records found.</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-black/5">
+                    <tr className="text-left">
+                      <th className="p-3 font-extrabold">Date</th>
+                      <th className="p-3 font-extrabold">Status</th>
+                      <th className="p-3 font-extrabold">Class</th>
+                      <th className="p-3 font-extrabold">Minutes Late</th>
+                      <th className="p-3 font-extrabold">Reason</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {history.map((record, idx) => (
+                      <tr key={record.attendanceId || idx} className="border-t border-black/5">
+                        <td className="p-3 text-black/70">
+                          {record.sessionDate
+                            ? new Date(record.sessionDate).toLocaleDateString()
+                            : "-"}
+                        </td>
+                        <td className="p-3">
+                          <span
+                            className={`rounded px-2 py-1 text-xs font-bold ${
+                              record.status === "PRESENT"
+                                ? "bg-green-100 text-green-700"
+                                : record.status === "LATE"
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-red-100 text-red-700"
+                            }`}
+                          >
+                            {record.status}
+                          </span>
+                        </td>
+                        <td className="p-3 text-black/60">
+                          {(record as any).className || (record.classId ? `Class ${record.classId}` : "-")}
+                        </td>
+                        <td className="p-3 text-black/70">
+                          {record.status === "LATE" ? (record.minutesLate ?? 0) : "-"}
+                        </td>
+                        <td className="p-3 text-black/60 text-xs">
+                          {record.reason || "-"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            <div className="mt-3 text-xs text-black/50">
+              Showing last {history.length} record(s)
             </div>
           </div>
         </div>

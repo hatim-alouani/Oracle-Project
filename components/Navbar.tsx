@@ -11,6 +11,7 @@ const items = [
   { href: "/anomalies", label: "Anomalies" },
   { href: "/reports", label: "Reports" },
   { href: "/statistics", label: "Statistics" },
+  { href: "/settings", label: "Settings" },
 ];
 
 export default function Navbar() {

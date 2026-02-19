@@ -6,6 +6,7 @@ import { classRoutes } from './routes/classes';
 import { alertRoutes } from './routes/alerts';
 import { anomalyRoutes } from './routes/anomalies';
 import { reportRoutes } from './routes/reports';
+import { thresholdRoutes } from './routes/thresholds';
 import { initializePool, closePool, query } from './db';
 import { setupCronJobs } from './cron';
 
@@ -28,6 +29,16 @@ fastify.register(cors, {
   credentials: true,
 });
 
+// Allow empty JSON bodies (for PUT requests like resolve/dismiss)
+fastify.addContentTypeParser('application/json', { parseAs: 'string' }, (req, body, done) => {
+  try {
+    const str = (body as string || '').trim();
+    done(null, str ? JSON.parse(str) : {});
+  } catch (err: any) {
+    done(err, undefined);
+  }
+});
+
 // Health check endpoint
 fastify.get('/health', async (request, reply) => {
   try {
@@ -45,6 +56,7 @@ async function registerRoutes() {
   await fastify.register(alertRoutes);
   await fastify.register(anomalyRoutes);
   await fastify.register(reportRoutes);
+  await fastify.register(thresholdRoutes);
 }
 
 // Start server

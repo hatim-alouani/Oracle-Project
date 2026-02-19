@@ -3,6 +3,9 @@ import {
   ClassItem,
   AlertItem,
   AnomalyPattern,
+  AlertThreshold,
+  ClassAttendanceRow,
+  AttendanceRecord,
   MonthlyAttendanceRow,
   SemesterKpiRow,
   StudentRiskRow,
@@ -11,6 +14,9 @@ import {
   mapClass,
   mapAlert,
   mapAnomaly,
+  mapAlertThreshold,
+  mapClassAttendance,
+  mapAttendance,
   mapMonthlyAttendance,
   mapSemesterKpi,
   mapStudentRisk,
@@ -43,11 +49,16 @@ const ENDPOINTS = {
   // Anomaly endpoints
   getAnomalies: `${API_BASE_URL}/api/anomalies`,
   
+  // Threshold endpoints
+  getThresholds: `${API_BASE_URL}/api/thresholds`,
+  
   // Report & Statistics endpoints
   getStatistics: `${API_BASE_URL}/api/statistics`,
   getRiskAssessment: `${API_BASE_URL}/api/reports/risk-assessment`,
   getSemesterKpis: `${API_BASE_URL}/api/reports/semester-kpis`,
   getMonthlyReport: `${API_BASE_URL}/api/reports/monthly`,
+  getClassAttendance: `${API_BASE_URL}/api/reports/class-attendance`,
+  getAttendanceHistory: `${API_BASE_URL}/api/attendance/history`,
 };
 
 async function safeJson(res: Response) {
@@ -323,6 +334,154 @@ export async function fetchMonthlyReport(filters?: {
     return mapArray(data, mapMonthlyAttendance, ["data", "result", "rows"]);
   } catch (e: any) {
     console.error("fetchMonthlyReport error:", e);
+    return [];
+  }
+}
+
+// ========================================
+// Alert Actions
+// ========================================
+
+export async function resolveAlert(alertId: number) {
+  const res = await fetch(`${API_BASE_URL}/api/alerts/${alertId}/resolve`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+  });
+  const data = await safeJson(res);
+  if (!res.ok) throw new Error(`PUT resolve alert failed: ${res.status} ${JSON.stringify(data)}`);
+  return data;
+}
+
+export async function dismissAlert(alertId: number) {
+  const res = await fetch(`${API_BASE_URL}/api/alerts/${alertId}/dismiss`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+  });
+  const data = await safeJson(res);
+  if (!res.ok) throw new Error(`PUT dismiss alert failed: ${res.status} ${JSON.stringify(data)}`);
+  return data;
+}
+
+// ========================================
+// Anomaly Actions
+// ========================================
+
+export async function detectAnomalies() {
+  const res = await fetch(`${API_BASE_URL}/api/anomalies/detect`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
+  const data = await safeJson(res);
+  if (!res.ok) throw new Error(`POST detect anomalies failed: ${res.status} ${JSON.stringify(data)}`);
+  return data;
+}
+
+export async function resolveAnomaly(patternId: number) {
+  const res = await fetch(`${API_BASE_URL}/api/anomalies/${patternId}/resolve`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+  });
+  const data = await safeJson(res);
+  if (!res.ok) throw new Error(`PUT resolve anomaly failed: ${res.status} ${JSON.stringify(data)}`);
+  return data;
+}
+
+// ========================================
+// Thresholds
+// ========================================
+
+export async function fetchThresholds(): Promise<AlertThreshold[]> {
+  try {
+    const res = await fetch(ENDPOINTS.getThresholds, { cache: "no-store" });
+    if (!res.ok) throw new Error(`GET thresholds failed: ${res.status}`);
+    const data = await safeJson(res);
+    return mapArray(data, mapAlertThreshold, ["thresholds", "data", "result"]);
+  } catch (e: any) {
+    console.error("fetchThresholds error:", e);
+    return [];
+  }
+}
+
+export async function createThreshold(payload: {
+  threshold_type: string;
+  threshold_value: number;
+  period?: string;
+  description?: string;
+}) {
+  const res = await fetch(ENDPOINTS.getThresholds, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await safeJson(res);
+  if (!res.ok) throw new Error(`POST create threshold failed: ${res.status} ${JSON.stringify(data)}`);
+  return data;
+}
+
+export async function updateThreshold(
+  thresholdId: number,
+  payload: { threshold_value?: number; period?: string; description?: string; is_active?: number }
+) {
+  const res = await fetch(`${API_BASE_URL}/api/thresholds/${thresholdId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await safeJson(res);
+  if (!res.ok) throw new Error(`PUT update threshold failed: ${res.status} ${JSON.stringify(data)}`);
+  return data;
+}
+
+export async function deleteThreshold(thresholdId: number) {
+  const res = await fetch(`${API_BASE_URL}/api/thresholds/${thresholdId}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+  const data = await safeJson(res);
+  if (!res.ok) throw new Error(`DELETE threshold failed: ${res.status} ${JSON.stringify(data)}`);
+  return data;
+}
+
+// ========================================
+// Attendance History
+// ========================================
+
+export async function fetchAttendanceHistory(filters?: {
+  student_id?: number;
+  class_id?: number;
+  limit?: number;
+}): Promise<AttendanceRecord[]> {
+  try {
+    let url = ENDPOINTS.getAttendanceHistory;
+    if (filters) {
+      const params = new URLSearchParams();
+      if (filters.student_id) params.append("student_id", filters.student_id.toString());
+      if (filters.class_id) params.append("class_id", filters.class_id.toString());
+      if (filters.limit) params.append("limit", filters.limit.toString());
+      if (params.toString()) url += `?${params.toString()}`;
+    }
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) throw new Error(`GET attendance history failed: ${res.status}`);
+    const data = await safeJson(res);
+    return mapArray(data, mapAttendance, ["data", "result", "rows"]);
+  } catch (e: any) {
+    console.error("fetchAttendanceHistory error:", e);
+    return [];
+  }
+}
+
+// ========================================
+// Class Attendance Report
+// ========================================
+
+export async function fetchClassAttendance(): Promise<ClassAttendanceRow[]> {
+  try {
+    const res = await fetch(ENDPOINTS.getClassAttendance, { cache: "no-store" });
+    if (!res.ok) throw new Error(`GET class attendance failed: ${res.status}`);
+    const data = await safeJson(res);
+    return mapArray(data, mapClassAttendance, ["data", "result", "rows"]);
+  } catch (e: any) {
+    console.error("fetchClassAttendance error:", e);
     return [];
   }
 }

@@ -8,7 +8,7 @@ import EmptyState from "@/components/EmptyState";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Toast from "@/components/Toast";
 import Select from "@/components/Select";
-import { fetchAnomalies } from "@/lib/api";
+import { fetchAnomalies, resolveAnomaly, detectAnomalies } from "@/lib/api";
 import { AnomalyPattern } from "@/lib/types";
 
 export default function AnomaliesPage() {
@@ -23,6 +23,22 @@ export default function AnomaliesPage() {
 
   // Detail Modal
   const [selectedAnomaly, setSelectedAnomaly] = useState<AnomalyPattern | null>(null);
+
+  const [detecting, setDetecting] = useState(false);
+
+  async function handleDetect() {
+    setDetecting(true);
+    setToast(null);
+    try {
+      const result = await detectAnomalies();
+      setToast({ type: "ok", msg: result.message || `Detection complete. ${result.detected || 0} anomalies found.` });
+      await loadAnomalies();
+    } catch (e: any) {
+      setToast({ type: "err", msg: e?.message ?? "Detection failed" });
+    } finally {
+      setDetecting(false);
+    }
+  }
 
   async function loadAnomalies() {
     setLoading(true);
@@ -73,6 +89,17 @@ export default function AnomaliesPage() {
           <Toast type={toast.type} msg={toast.msg} />
         </div>
       )}
+
+      {/* Actions */}
+      <div className="mb-6">
+        <button
+          onClick={handleDetect}
+          disabled={detecting}
+          className="rounded bg-[#2e89c6] px-4 py-2 text-sm font-bold text-white hover:bg-[#2678b0] disabled:opacity-50 transition"
+        >
+          {detecting ? "Detecting..." : "Run Anomaly Detection"}
+        </button>
+      </div>
 
       {/* Summary Stats */}
       <div className="grid gap-4 md:grid-cols-4 mb-6">
@@ -211,12 +238,30 @@ export default function AnomaliesPage() {
                       )}
                     </td>
                     <td className="p-3">
-                      <button
-                        onClick={() => setSelectedAnomaly(anomaly)}
-                        className="text-xs text-[#2e89c6] hover:underline font-semibold"
-                      >
-                        View Details
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setSelectedAnomaly(anomaly)}
+                          className="text-xs text-[#2e89c6] hover:underline font-semibold"
+                        >
+                          View Details
+                        </button>
+                        {!anomaly.isResolved && (
+                          <button
+                            onClick={async () => {
+                              try {
+                                await resolveAnomaly(anomaly.patternId);
+                                setToast({ type: "ok", msg: "Anomaly resolved" });
+                                loadAnomalies();
+                              } catch (e: any) {
+                                setToast({ type: "err", msg: e?.message ?? "Failed to resolve" });
+                              }
+                            }}
+                            className="rounded bg-green-50 border border-green-600/30 px-2 py-1 text-xs font-bold text-green-700 hover:bg-green-100"
+                          >
+                            Resolve
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

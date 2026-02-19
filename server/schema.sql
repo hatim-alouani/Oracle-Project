@@ -84,7 +84,20 @@ CREATE TABLE ANOMALY_PATTERNS (
   SEVERITY VARCHAR2(20) DEFAULT 'MEDIUM' CHECK (SEVERITY IN ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL')),
   DETECTION_DATE TIMESTAMP DEFAULT SYSDATE NOT NULL,
   IS_RESOLVED NUMBER(1) DEFAULT 0 CHECK (IS_RESOLVED IN (0, 1)),
+  RESOLVED_DATE TIMESTAMP,
   CONSTRAINT FK_PATTERN_STUDENT FOREIGN KEY (STUDENT_ID) REFERENCES STUDENTS(STUDENT_ID) ON DELETE CASCADE
+);
+
+-- Alert Thresholds table (configurable alert thresholds)
+CREATE TABLE ALERT_THRESHOLDS (
+  THRESHOLD_ID NUMBER PRIMARY KEY,
+  THRESHOLD_TYPE VARCHAR2(50) NOT NULL UNIQUE,
+  THRESHOLD_VALUE NUMBER NOT NULL,
+  PERIOD VARCHAR2(20) DEFAULT 'MONTHLY' CHECK (PERIOD IN ('DAILY', 'WEEKLY', 'MONTHLY', 'SEMESTER')),
+  DESCRIPTION VARCHAR2(500),
+  IS_ACTIVE NUMBER(1) DEFAULT 1 CHECK (IS_ACTIVE IN (0, 1)),
+  CREATED_DATE TIMESTAMP DEFAULT SYSDATE NOT NULL,
+  UPDATED_DATE TIMESTAMP DEFAULT SYSDATE NOT NULL
 );
 
 -- =====================================================
@@ -165,6 +178,192 @@ BEGIN
   END IF;
 END;
 /
+
+-- =====================================================
+-- AUTO-INCREMENT TRIGGER FOR ALERT_THRESHOLDS
+-- =====================================================
+CREATE SEQUENCE SEQ_THRESHOLD_ID START WITH 1 INCREMENT BY 1 NOCACHE;
+
+CREATE OR REPLACE TRIGGER TRG_THRESHOLDS_ID
+BEFORE INSERT ON ALERT_THRESHOLDS
+FOR EACH ROW
+BEGIN
+  IF :NEW.THRESHOLD_ID IS NULL THEN
+    SELECT SEQ_THRESHOLD_ID.NEXTVAL INTO :NEW.THRESHOLD_ID FROM DUAL;
+  END IF;
+END;
+/
+
+-- =====================================================
+-- BUSINESS LOGIC TRIGGERS (Project Requirement: Trigger-based automation)
+-- =====================================================
+
+-- Trigger 1: Auto-create alert when absence threshold exceeded
+CREATE OR REPLACE TRIGGER TRG_ABSENCE_ALERT
+AFTER UPDATE OF ABSENCE_COUNT ON STUDENTS
+FOR EACH ROW
+DECLARE
+    v_threshold NUMBER;
+    v_alert_exists NUMBER;
+BEGIN
+    SELECT THRESHOLD_VALUE INTO v_threshold
+    FROM ALERT_THRESHOLDS
+    WHERE THRESHOLD_TYPE = 'ABSENCE_MONTHLY' AND IS_ACTIVE = 1;
+    
+    IF :NEW.ABSENCE_COUNT >= v_threshold AND :OLD.ABSENCE_COUNT < v_threshold THEN
+        SELECT COUNT(*) INTO v_alert_exists
+        FROM ALERTS
+        WHERE STUDENT_ID = :NEW.STUDENT_ID 
+        AND ALERT_TYPE = 'ABSENCE_THRESHOLD'
+        AND STATUS = 'ACTIVE';
+        
+        IF v_alert_exists = 0 THEN
+            INSERT INTO ALERTS (STUDENT_ID, ALERT_TYPE, THRESHOLD, MESSAGE, STATUS)
+            VALUES (
+                :NEW.STUDENT_ID, 
+                'ABSENCE_THRESHOLD', 
+                v_threshold,
+                'Student ' || :NEW.FIRST_NAME || ' ' || :NEW.LAST_NAME || 
+                ' has exceeded absence threshold (' || :NEW.ABSENCE_COUNT || ' absences)',
+                'ACTIVE'
+            );
+        END IF;
+    END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN NULL;
+END;
+/
+
+-- Trigger 2: Auto-create alert for excessive lateness
+CREATE OR REPLACE TRIGGER TRG_LATE_ALERT
+AFTER UPDATE OF LATE_COUNT ON STUDENTS
+FOR EACH ROW
+DECLARE
+    v_threshold NUMBER;
+    v_alert_exists NUMBER;
+BEGIN
+    SELECT THRESHOLD_VALUE INTO v_threshold
+    FROM ALERT_THRESHOLDS
+    WHERE THRESHOLD_TYPE = 'LATE_MONTHLY' AND IS_ACTIVE = 1;
+    
+    IF :NEW.LATE_COUNT >= v_threshold AND :OLD.LATE_COUNT < v_threshold THEN
+        SELECT COUNT(*) INTO v_alert_exists
+        FROM ALERTS
+        WHERE STUDENT_ID = :NEW.STUDENT_ID 
+        AND ALERT_TYPE = 'LATE_THRESHOLD'
+        AND STATUS = 'ACTIVE';
+        
+        IF v_alert_exists = 0 THEN
+            INSERT INTO ALERTS (STUDENT_ID, ALERT_TYPE, THRESHOLD, MESSAGE, STATUS)
+            VALUES (
+                :NEW.STUDENT_ID, 
+                'LATE_THRESHOLD', 
+                v_threshold,
+                'Student has been late ' || :NEW.LATE_COUNT || ' times',
+                'ACTIVE'
+            );
+        END IF;
+    END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN NULL;
+END;
+/
+
+-- Trigger 3: Detect consecutive absences anomaly
+CREATE OR REPLACE TRIGGER TRG_CONSECUTIVE_ABSENCES
+AFTER INSERT ON ATTENDANCE
+FOR EACH ROW
+DECLARE
+    v_consecutive_count NUMBER;
+    v_threshold NUMBER;
+BEGIN
+    IF :NEW.STATUS = 'ABSENT' THEN
+        SELECT THRESHOLD_VALUE INTO v_threshold
+        FROM ALERT_THRESHOLDS
+        WHERE THRESHOLD_TYPE = 'CONSECUTIVE_ABSENCES' AND IS_ACTIVE = 1;
+        
+        SELECT COUNT(*) INTO v_consecutive_count
+        FROM (
+            SELECT STATUS, SESSION_DATE
+            FROM ATTENDANCE
+            WHERE STUDENT_ID = :NEW.STUDENT_ID
+            AND SESSION_DATE <= :NEW.SESSION_DATE
+            ORDER BY SESSION_DATE DESC
+            FETCH FIRST 3 ROWS ONLY
+        )
+        WHERE STATUS = 'ABSENT';
+        
+        IF v_consecutive_count >= v_threshold THEN
+            INSERT INTO ANOMALY_PATTERNS (
+                STUDENT_ID, 
+                PATTERN_TYPE, 
+                DESCRIPTION, 
+                SEVERITY
+            )
+            VALUES (
+                :NEW.STUDENT_ID,
+                'CONSECUTIVE_ABSENCES',
+                v_consecutive_count || ' consecutive absences detected',
+                'HIGH'
+            );
+        END IF;
+    END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN NULL;
+END;
+/
+
+-- Trigger 4: Validate attendance data before insert
+CREATE OR REPLACE TRIGGER TRG_ATTENDANCE_VALIDATION
+BEFORE INSERT ON ATTENDANCE
+FOR EACH ROW
+DECLARE
+    v_existing_count NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_existing_count
+    FROM ATTENDANCE
+    WHERE STUDENT_ID = :NEW.STUDENT_ID
+    AND TRUNC(SESSION_DATE) = TRUNC(:NEW.SESSION_DATE)
+    AND (:NEW.CLASS_ID IS NULL OR CLASS_ID = :NEW.CLASS_ID);
+    
+    IF v_existing_count > 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 
+            'Attendance already recorded for this student on this date');
+    END IF;
+    
+    IF :NEW.STATUS = 'LATE' AND (:NEW.MINUTES_LATE IS NULL OR :NEW.MINUTES_LATE <= 0) THEN
+        RAISE_APPLICATION_ERROR(-20002, 
+            'Minutes late must be specified and greater than 0 for LATE status');
+    END IF;
+    
+    IF :NEW.STATUS = 'ABSENT' AND :NEW.REASON IS NULL THEN
+        :NEW.REASON := 'No reason provided';
+    END IF;
+END;
+/
+
+-- Trigger 5: Auto-update timestamps on STUDENTS
+CREATE OR REPLACE TRIGGER TRG_STUDENTS_UPDATE_TIME
+BEFORE UPDATE ON STUDENTS
+FOR EACH ROW
+BEGIN
+    :NEW.UPDATED_DATE := SYSDATE;
+END;
+/
+
+-- =====================================================
+-- DEFAULT ALERT THRESHOLDS
+-- =====================================================
+INSERT INTO ALERT_THRESHOLDS (THRESHOLD_TYPE, THRESHOLD_VALUE, PERIOD, DESCRIPTION)
+VALUES ('ABSENCE_MONTHLY', 5, 'MONTHLY', 'Alert when student has 5+ absences in a month');
+
+INSERT INTO ALERT_THRESHOLDS (THRESHOLD_TYPE, THRESHOLD_VALUE, PERIOD, DESCRIPTION)
+VALUES ('LATE_MONTHLY', 10, 'MONTHLY', 'Alert when student is late 10+ times in a month');
+
+INSERT INTO ALERT_THRESHOLDS (THRESHOLD_TYPE, THRESHOLD_VALUE, PERIOD, DESCRIPTION)
+VALUES ('CONSECUTIVE_ABSENCES', 3, 'DAILY', 'Alert when student has 3 consecutive absences');
+
+COMMIT;
 
 -- =====================================================
 -- SAMPLE DATA

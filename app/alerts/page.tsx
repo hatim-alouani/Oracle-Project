@@ -7,7 +7,7 @@ import EmptyState from "@/components/EmptyState";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Toast from "@/components/Toast";
 import Select from "@/components/Select";
-import { fetchAlerts, fetchActiveAlerts } from "@/lib/api";
+import { fetchAlerts, fetchActiveAlerts, resolveAlert, dismissAlert } from "@/lib/api";
 import { AlertItem } from "@/lib/types";
 
 type Tab = "active" | "all";
@@ -57,39 +57,47 @@ export default function AlertsPage() {
 
   return (
     <div>
-      <SectionTitle
-        title="Alerts"
-        subtitle="Monitor attendance alerts and notifications."
-      />
+      <div className="mb-8">
+        <div className="mb-2">
+          <h1 className="text-4xl font-bold text-gray-900 bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+            Alerts
+          </h1>
+          <p className="mt-2 text-lg text-gray-600">
+            Monitor attendance alerts and notifications
+          </p>
+        </div>
+      </div>
 
       {toast && (
-        <div className="mb-4">
+        <div className="mb-6">
           <Toast type={toast.type} msg={toast.msg} />
         </div>
       )}
 
-      {/* Tabs */}
-      <div className="flex gap-2 mb-6 border-b border-black/10">
-        <button
-          onClick={() => setActiveTab("active")}
-          className={`px-4 py-2 font-bold text-sm transition ${
-            activeTab === "active"
-              ? "border-b-2 border-[#2e89c6] text-[#2e89c6]"
-              : "text-black/60 hover:text-black"
-          }`}
-        >
-          Active Alerts
-        </button>
-        <button
-          onClick={() => setActiveTab("all")}
-          className={`px-4 py-2 font-bold text-sm transition ${
-            activeTab === "all"
-              ? "border-b-2 border-[#2e89c6] text-[#2e89c6]"
-              : "text-black/60 hover:text-black"
-          }`}
-        >
-          All Alerts
-        </button>
+      {/* Modern Tabs */}
+      <div className="mb-8">
+        <div className="inline-flex rounded-xl border border-white/20 bg-white/60 backdrop-blur-xl p-1 shadow-lg">
+          <button
+            onClick={() => setActiveTab("active")}
+            className={`px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
+              activeTab === "active"
+                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md"
+                : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
+            }`}
+          >
+            Active Alerts
+          </button>
+          <button
+            onClick={() => setActiveTab("all")}
+            className={`px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-200 ${
+              activeTab === "all"
+                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md"
+                : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
+            }`}
+          >
+            All Alerts
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -155,6 +163,7 @@ export default function AlertsPage() {
                   <th className="p-3 font-extrabold">Message</th>
                   <th className="p-3 font-extrabold">Created</th>
                   <th className="p-3 font-extrabold">Status</th>
+                  <th className="p-3 font-extrabold">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -184,6 +193,40 @@ export default function AlertsPage() {
                       >
                         {alert.status}
                       </span>
+                    </td>
+                    <td className="p-3">
+                      {alert.status === "ACTIVE" && (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={async () => {
+                              try {
+                                await resolveAlert(alert.alertId);
+                                setToast({ type: "ok", msg: "Alert resolved" });
+                                loadAlerts();
+                              } catch (e: any) {
+                                setToast({ type: "err", msg: e?.message ?? "Failed to resolve" });
+                              }
+                            }}
+                            className="rounded bg-green-50 border border-green-600/30 px-2 py-1 text-xs font-bold text-green-700 hover:bg-green-100"
+                          >
+                            Resolve
+                          </button>
+                          <button
+                            onClick={async () => {
+                              try {
+                                await dismissAlert(alert.alertId);
+                                setToast({ type: "ok", msg: "Alert dismissed" });
+                                loadAlerts();
+                              } catch (e: any) {
+                                setToast({ type: "err", msg: e?.message ?? "Failed to dismiss" });
+                              }
+                            }}
+                            className="rounded bg-gray-50 border border-gray-400/30 px-2 py-1 text-xs font-bold text-gray-600 hover:bg-gray-100"
+                          >
+                            Dismiss
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}

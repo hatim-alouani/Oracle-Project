@@ -36,15 +36,23 @@ export async function POST(
   try {
     const { path } = await context.params;
     const pathString = path.join('/');
-    const body = await request.json();
     const url = `${BACKEND_URL}/api/${pathString}`;
     
     console.log(`[API Proxy POST] ${url}`);
+
+    let body: string | undefined;
+    try {
+      const json = await request.json();
+      body = JSON.stringify(json);
+    } catch {
+      // No body sent (e.g. anomaly detection)
+    }
     
     const res = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      ...(body
+        ? { headers: { 'Content-Type': 'application/json' }, body }
+        : {}),
     });
     const data = await res.json();
     return NextResponse.json(data, { status: res.status });
@@ -61,15 +69,23 @@ export async function PUT(
   try {
     const { path } = await context.params;
     const pathString = path.join('/');
-    const body = await request.json();
     const url = `${BACKEND_URL}/api/${pathString}`;
     
     console.log(`[API Proxy PUT] ${url}`);
+
+    let body: string | undefined;
+    try {
+      const json = await request.json();
+      body = JSON.stringify(json);
+    } catch {
+      // No body sent (e.g. resolve/dismiss actions)
+    }
     
     const res = await fetch(url, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      ...(body
+        ? { headers: { 'Content-Type': 'application/json' }, body }
+        : {}),
     });
     const data = await res.json();
     return NextResponse.json(data, { status: res.status });
@@ -89,10 +105,19 @@ export async function DELETE(
     const url = `${BACKEND_URL}/api/${pathString}`;
     
     console.log(`[API Proxy DELETE] ${url}`);
+
+    let body: string | undefined;
+    try {
+      const json = await request.json();
+      body = JSON.stringify(json);
+    } catch {
+      // No body sent
+    }
     
     const res = await fetch(url, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
+      ...(body ? { body } : {}),
     });
     const data = await res.json();
     return NextResponse.json(data, { status: res.status });

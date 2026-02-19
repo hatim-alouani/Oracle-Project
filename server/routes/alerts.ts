@@ -40,4 +40,62 @@ export async function alertRoutes(fastify: FastifyInstance) {
       reply.status(500).send({ error: 'Failed to fetch active alerts' });
     }
   });
+
+  // PUT /api/alerts/:id/resolve - Resolve an alert
+  fastify.put<{ Params: { id: string } }>('/api/alerts/:id/resolve', async (request, reply) => {
+    try {
+      const alertId = parseInt(request.params.id);
+      if (!alertId) return reply.status(400).send({ error: 'Invalid alert ID' });
+
+      try {
+        await query(
+          `UPDATE ALERTS SET STATUS = 'RESOLVED', RESOLVED_AT = SYSDATE WHERE ALERT_ID = :id AND STATUS = 'ACTIVE'`,
+          [alertId]
+        );
+      } catch (e: any) {
+        if (e?.errorNum === 904) {
+          await query(
+            `UPDATE ALERTS SET STATUS = 'RESOLVED' WHERE ALERT_ID = :id AND STATUS = 'ACTIVE'`,
+            [alertId]
+          );
+        } else {
+          throw e;
+        }
+      }
+
+      return { success: true, message: 'Alert resolved' };
+    } catch (error: any) {
+      fastify.log.error(error);
+      reply.status(500).send({ error: 'Failed to resolve alert' });
+    }
+  });
+
+  // PUT /api/alerts/:id/dismiss - Dismiss an alert
+  fastify.put<{ Params: { id: string } }>('/api/alerts/:id/dismiss', async (request, reply) => {
+    try {
+      const alertId = parseInt(request.params.id);
+      if (!alertId) return reply.status(400).send({ error: 'Invalid alert ID' });
+
+      try {
+        await query(
+          `UPDATE ALERTS SET STATUS = 'DISMISSED', RESOLVED_AT = SYSDATE WHERE ALERT_ID = :id AND STATUS = 'ACTIVE'`,
+          [alertId]
+        );
+      } catch (e: any) {
+        if (e?.errorNum === 904) {
+          await query(
+            `UPDATE ALERTS SET STATUS = 'DISMISSED' WHERE ALERT_ID = :id AND STATUS = 'ACTIVE'`,
+            [alertId]
+          );
+        } else {
+          throw e;
+        }
+      }
+
+      return { success: true, message: 'Alert dismissed' };
+    } catch (error: any) {
+      fastify.log.error(error);
+      reply.status(500).send({ error: 'Failed to dismiss alert' });
+    }
+  });
 }

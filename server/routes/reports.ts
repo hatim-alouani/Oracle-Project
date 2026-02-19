@@ -93,8 +93,43 @@ export async function reportRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // GET /api/reports/semester-kpis - Semester KPIs
+  // GET /api/reports/semester-kpis - Semester KPIs (semester-level aggregation)
   fastify.get('/api/reports/semester-kpis', async (request, reply) => {
+    try {
+      const result = await query(`
+        SELECT 
+          c.SEMESTER,
+          COUNT(DISTINCT sc.STUDENT_ID) AS TOTAL_STUDENTS,
+          COUNT(DISTINCT c.CLASS_ID) AS TOTAL_CLASSES,
+          ROUND(
+            (SUM(CASE WHEN a.STATUS = 'PRESENT' THEN 1 ELSE 0 END) * 100.0) / 
+            NULLIF(COUNT(a.ATTENDANCE_ID), 0),
+            2
+          ) AS AVG_ATTENDANCE_RATE,
+          COUNT(DISTINCT CASE 
+            WHEN s.ABSENCE_COUNT >= 5 THEN sc.STUDENT_ID 
+          END) AS AT_RISK_STUDENTS,
+          COUNT(DISTINCT CASE 
+            WHEN (SELECT COUNT(*) FROM ALERTS al WHERE al.STUDENT_ID = sc.STUDENT_ID AND al.STATUS = 'ACTIVE') > 0 
+            THEN sc.STUDENT_ID 
+          END) AS STUDENTS_WITH_ALERTS
+        FROM CLASSES c
+        LEFT JOIN STUDENT_CLASSES sc ON c.CLASS_ID = sc.CLASS_ID
+        LEFT JOIN STUDENTS s ON sc.STUDENT_ID = s.STUDENT_ID
+        LEFT JOIN ATTENDANCE a ON c.CLASS_ID = a.CLASS_ID AND a.STUDENT_ID = sc.STUDENT_ID
+        GROUP BY c.SEMESTER
+        ORDER BY c.SEMESTER
+      `);
+      
+      return { data: result.rows };
+    } catch (error: any) {
+      fastify.log.error(error);
+      reply.status(500).send({ error: 'Failed to fetch semester KPIs' });
+    }
+  });
+
+  // GET /api/reports/class-attendance - Class-level attendance summary
+  fastify.get('/api/reports/class-attendance', async (request, reply) => {
     try {
       const result = await query(`
         SELECT 
@@ -102,18 +137,18 @@ export async function reportRoutes(fastify: FastifyInstance) {
           c.CLASS_NAME,
           c.SEMESTER,
           COUNT(DISTINCT sc.STUDENT_ID) AS ENROLLED_STUDENTS,
-          COUNT(DISTINCT a.ATTENDANCE_ID) AS TOTAL_SESSIONS,
-          SUM(CASE WHEN a.STATUS = 'PRESENT' THEN 1 ELSE 0 END) AS PRESENT_COUNT,
-          SUM(CASE WHEN a.STATUS = 'ABSENT' THEN 1 ELSE 0 END) AS ABSENT_COUNT,
-          SUM(CASE WHEN a.STATUS = 'LATE' THEN 1 ELSE 0 END) AS LATE_COUNT,
+          COUNT(a.ATTENDANCE_ID) AS TOTAL_ATTENDANCE_RECORDS,
+          SUM(CASE WHEN a.STATUS = 'PRESENT' THEN 1 ELSE 0 END) AS TOTAL_PRESENT,
+          SUM(CASE WHEN a.STATUS = 'LATE' THEN 1 ELSE 0 END) AS TOTAL_LATE,
+          SUM(CASE WHEN a.STATUS = 'ABSENT' THEN 1 ELSE 0 END) AS TOTAL_ABSENT,
           ROUND(
             (SUM(CASE WHEN a.STATUS = 'PRESENT' THEN 1 ELSE 0 END) * 100.0) / 
             NULLIF(COUNT(a.ATTENDANCE_ID), 0),
             2
-          ) AS ATTENDANCE_RATE
+          ) AS CLASS_ATTENDANCE_RATE
         FROM CLASSES c
         LEFT JOIN STUDENT_CLASSES sc ON c.CLASS_ID = sc.CLASS_ID
-        LEFT JOIN ATTENDANCE a ON c.CLASS_ID = a.CLASS_ID
+        LEFT JOIN ATTENDANCE a ON sc.STUDENT_ID = a.STUDENT_ID AND a.CLASS_ID = c.CLASS_ID
         GROUP BY c.CLASS_ID, c.CLASS_NAME, c.SEMESTER
         ORDER BY c.SEMESTER, c.CLASS_NAME
       `);
@@ -121,7 +156,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
       return { data: result.rows };
     } catch (error: any) {
       fastify.log.error(error);
-      reply.status(500).send({ error: 'Failed to fetch semester KPIs' });
+      reply.status(500).send({ error: 'Failed to fetch class attendance' });
     }
   });
 
@@ -138,14 +173,19 @@ export async function reportRoutes(fastify: FastifyInstance) {
           s.FIRST_NAME || ' ' || s.LAST_NAME AS FULL_NAME,
           c.CLASS_NAME,
           TO_CHAR(a.SESSION_DATE, 'YYYY-MM') AS MONTH,
-          COUNT(*) AS TOTAL_SESSIONS,
-          SUM(CASE WHEN a.STATUS = 'PRESENT' THEN 1 ELSE 0 END) AS PRESENT_COUNT,
-          SUM(CASE WHEN a.STATUS = 'ABSENT' THEN 1 ELSE 0 END) AS ABSENT_COUNT,
-          SUM(CASE WHEN a.STATUS = 'LATE' THEN 1 ELSE 0 END) AS LATE_COUNT,
+          TO_CHAR(a.SESSION_DATE, 'Month YYYY') AS MONTH_NAME,
+          COUNT(*) AS TOTAL_DAYS,
+          SUM(CASE WHEN a.STATUS = 'PRESENT' THEN 1 ELSE 0 END) AS DAYS_PRESENT,
+          SUM(CASE WHEN a.STATUS = 'ABSENT' THEN 1 ELSE 0 END) AS DAYS_ABSENT,
+          SUM(CASE WHEN a.STATUS = 'LATE' THEN 1 ELSE 0 END) AS DAYS_LATE,
           ROUND(
             (SUM(CASE WHEN a.STATUS = 'PRESENT' THEN 1 ELSE 0 END) * 100.0) / COUNT(*),
             2
-          ) AS ATTENDANCE_RATE
+          ) AS ATTENDANCE_RATE,
+          ROUND(
+            AVG(CASE WHEN a.STATUS = 'LATE' THEN a.MINUTES_LATE ELSE 0 END),
+            2
+          ) AS AVG_MINUTES_LATE
         FROM ATTENDANCE a
         JOIN STUDENTS s ON a.STUDENT_ID = s.STUDENT_ID
         LEFT JOIN CLASSES c ON a.CLASS_ID = c.CLASS_ID
@@ -154,7 +194,8 @@ export async function reportRoutes(fastify: FastifyInstance) {
           s.FIRST_NAME,
           s.LAST_NAME,
           c.CLASS_NAME,
-          TO_CHAR(a.SESSION_DATE, 'YYYY-MM')
+          TO_CHAR(a.SESSION_DATE, 'YYYY-MM'),
+          TO_CHAR(a.SESSION_DATE, 'Month YYYY')
         ORDER BY MONTH DESC, FULL_NAME
       `);
       
@@ -162,6 +203,55 @@ export async function reportRoutes(fastify: FastifyInstance) {
     } catch (error: any) {
       fastify.log.error(error);
       reply.status(500).send({ error: 'Failed to fetch monthly report' });
+    }
+  });
+
+  // GET /api/attendance/history - Attendance history for a student
+  fastify.get<{
+    Querystring: { student_id?: string; class_id?: string; limit?: string }
+  }>('/api/attendance/history', async (request, reply) => {
+    try {
+      const { student_id, class_id, limit } = request.query;
+      const maxRows = parseInt(limit || '50') || 50;
+
+      let sql = `
+        SELECT 
+          a.ATTENDANCE_ID,
+          a.STUDENT_ID,
+          s.FIRST_NAME,
+          s.LAST_NAME,
+          s.FIRST_NAME || ' ' || s.LAST_NAME AS STUDENT_NAME,
+          a.CLASS_ID,
+          c.CLASS_NAME,
+          a.SESSION_DATE,
+          a.STATUS,
+          a.MINUTES_LATE,
+          a.REASON,
+          a.CREATED_DATE
+        FROM ATTENDANCE a
+        JOIN STUDENTS s ON a.STUDENT_ID = s.STUDENT_ID
+        LEFT JOIN CLASSES c ON a.CLASS_ID = c.CLASS_ID
+        WHERE 1=1
+      `;
+      const binds: any[] = [];
+
+      if (student_id) {
+        sql += ` AND a.STUDENT_ID = :student_id`;
+        binds.push(parseInt(student_id));
+      }
+      if (class_id) {
+        sql += ` AND a.CLASS_ID = :class_id`;
+        binds.push(parseInt(class_id));
+      }
+
+      sql += ` ORDER BY a.SESSION_DATE DESC, a.CREATED_DATE DESC FETCH FIRST :maxRows ROWS ONLY`;
+      binds.push(maxRows);
+
+      const result = await query(sql, binds);
+      return { data: result.rows };
+    } catch (error: any) {
+      fastify.log.error(error);
+      reply.status(500).send({ error: 'Failed to fetch attendance history' });
     }
   });
 }
