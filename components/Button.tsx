@@ -18,11 +18,11 @@ export default function Button({
   className?: string;
 }) {
   const variantClasses = {
-    primary: "bg-[#2e89c6] text-white hover:bg-[#2e89c6]/90",
-    secondary: "bg-black/5 text-black hover:bg-black/10",
-    danger: "bg-red-600 text-white hover:bg-red-700",
-    success: "bg-green-600 text-white hover:bg-green-700",
-    warning: "bg-yellow-600 text-white hover:bg-yellow-700",
+    primary: "bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl",
+    secondary: "bg-white border-2 border-slate-300 text-slate-700 hover:border-blue-400 hover:text-blue-700 shadow-md hover:shadow-lg",
+    danger: "bg-gradient-to-r from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800 shadow-lg hover:shadow-xl",
+    success: "bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 shadow-lg hover:shadow-xl",
+    warning: "bg-gradient-to-r from-yellow-600 to-yellow-700 text-white hover:from-yellow-700 hover:to-yellow-800 shadow-lg hover:shadow-xl",
   };
 
   const sizeClasses = {
@@ -36,7 +36,7 @@ export default function Button({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`rounded font-extrabold transition disabled:opacity-50 disabled:cursor-not-allowed ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`rounded-lg font-semibold transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
     >
       {children}
     </button>

@@ -10,7 +10,8 @@
     "build:server": "tsc -p tsconfig.server.json",
     "start": "next start",
     "start:server": "node dist/index.js",
-    "lint": "eslint"
+    "lint": "eslint",
+    "add-students": "tsx scripts/add-students.ts"
   },
   "dependencies": {
     "@fastify/cors": "^10.1.0",
