@@ -323,10 +323,10 @@ export default function ReportsPage() {
                   <tbody>
                     {riskData
                       .sort((a, b) => {
-                        const order = { HIGH: 0, MEDIUM: 1, LOW: 2 };
+                        const order = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
                         return (
-                          (order[a.riskLevel as keyof typeof order] ?? 3) -
-                          (order[b.riskLevel as keyof typeof order] ?? 3)
+                          (order[a.riskLevel as keyof typeof order] ?? 4) -
+                          (order[b.riskLevel as keyof typeof order] ?? 4)
                         );
                       })
                       .map((row, idx) => (
@@ -335,7 +335,9 @@ export default function ReportsPage() {
                           <td className="p-3">
                             <span
                               className={`rounded px-2 py-1 text-xs font-bold ${
-                                row.riskLevel === "HIGH"
+                                row.riskLevel === "CRITICAL"
+                                  ? "bg-red-600 text-white"
+                                  : row.riskLevel === "HIGH"
                                   ? "bg-red-100 text-red-700"
                                   : row.riskLevel === "MEDIUM"
                                   ? "bg-yellow-100 text-yellow-700"
