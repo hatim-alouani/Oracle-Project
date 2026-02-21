@@ -16,12 +16,10 @@ export default function AnomaliesPage() {
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<{ type: "ok" | "err"; msg: string } | null>(null);
 
-  // Filters
   const [filterSeverity, setFilterSeverity] = useState("");
   const [filterResolved, setFilterResolved] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Detail Modal
   const [selectedAnomaly, setSelectedAnomaly] = useState<AnomalyPattern | null>(null);
 
   const [detecting, setDetecting] = useState(false);
@@ -90,7 +88,6 @@ export default function AnomaliesPage() {
         </div>
       )}
 
-      {/* Actions */}
       <div className="mb-6">
         <button
           onClick={handleDetect}
@@ -101,7 +98,6 @@ export default function AnomaliesPage() {
         </button>
       </div>
 
-      {/* Summary Stats */}
       <div className="grid gap-4 md:grid-cols-4 mb-6">
         <Card>
           <div className="text-center">
@@ -135,7 +131,6 @@ export default function AnomaliesPage() {
         </Card>
       </div>
 
-      {/* Filters */}
       <Card title="Filters" className="mb-6">
         <div className="grid gap-4 md:grid-cols-3">
           <div>

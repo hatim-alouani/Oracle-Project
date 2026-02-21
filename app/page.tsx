@@ -3,7 +3,6 @@ import Link from "next/link";
 export default function LandingPage() {
   return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center">
-      {/* Hero Section */}
       <div className="text-center max-w-5xl mx-auto px-4 animate-fade-in">
         <div className="inline-flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-800 mb-8 animate-scale-in">
           <span className="text-2xl">🎓</span>
@@ -46,7 +45,6 @@ export default function LandingPage() {
           </Link>
         </div>
 
-        {/* Feature Cards */}
         <div className="grid md:grid-cols-3 gap-6 stagger-animation">
           <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 shadow-xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 card-hover">
             <div className="h-1 bg-gradient-to-r from-blue-500 to-blue-400 absolute top-0 left-0 right-0"></div>
@@ -82,7 +80,6 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Stats */}
         <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
           <div className="text-center">
             <div className="text-4xl font-bold text-blue-600 mb-2">100%</div>

@@ -2,26 +2,21 @@ import { FastifyInstance } from 'fastify';
 import { query } from '../db';
 
 export async function reportRoutes(fastify: FastifyInstance) {
-  // GET /api/statistics - Dashboard statistics
   fastify.get('/api/statistics', async (request, reply) => {
     try {
-      // Get total students
       const studentsResult = await query('SELECT COUNT(*) as TOTAL FROM STUDENTS');
       const totalStudents = studentsResult.rows?.[0]?.TOTAL || 0;
 
-      // Get active alerts
       const alertsResult = await query(
         `SELECT COUNT(*) as TOTAL FROM ALERTS WHERE STATUS = 'ACTIVE'`
       );
       const activeAlerts = alertsResult.rows?.[0]?.TOTAL || 0;
 
-      // Get at-risk students (students with 5+ absences)
       const riskResult = await query(
         `SELECT COUNT(*) as TOTAL FROM STUDENTS WHERE ABSENCE_COUNT >= 5`
       );
       const atRiskStudents = riskResult.rows?.[0]?.TOTAL || 0;
 
-      // Get recent anomalies if table exists
       let recentAnomalies = [];
       try {
         const anomaliesResult = await query(`
@@ -38,7 +33,6 @@ export async function reportRoutes(fastify: FastifyInstance) {
         `);
         recentAnomalies = anomaliesResult.rows || [];
       } catch (e) {
-        // Anomaly table might not exist, that's ok
       }
 
       return {
@@ -53,7 +47,6 @@ export async function reportRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // GET /api/reports/risk-assessment - Student risk assessment
   fastify.get('/api/reports/risk-assessment', async (request, reply) => {
     try {
       const result = await query(`
@@ -61,7 +54,8 @@ export async function reportRoutes(fastify: FastifyInstance) {
           s.STUDENT_ID,
           s.FIRST_NAME,
           s.LAST_NAME,
-          s.FIRST_NAME || ' ' || s.LAST_NAME AS FULL_NAME,
+          s.FIRST_NAME || ' ' || s.LAST_NAME AS STUDENT_NAME,
+          s.EMAIL,
           s.ABSENCE_COUNT,
           s.LATE_COUNT,
           (
@@ -70,6 +64,12 @@ export async function reportRoutes(fastify: FastifyInstance) {
             WHERE al.STUDENT_ID = s.STUDENT_ID 
             AND al.STATUS = 'ACTIVE'
           ) AS ACTIVE_ALERTS,
+          (
+            SELECT COUNT(*) 
+            FROM ANOMALY_PATTERNS ap 
+            WHERE ap.STUDENT_ID = s.STUDENT_ID 
+            AND ap.IS_RESOLVED = 0
+          ) AS DETECTED_ANOMALIES,
           CASE 
             WHEN s.ABSENCE_COUNT >= 10 THEN 'CRITICAL'
             WHEN s.ABSENCE_COUNT >= 5 THEN 'HIGH'
@@ -93,7 +93,6 @@ export async function reportRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // GET /api/reports/semester-kpis - Semester KPIs (semester-level aggregation)
   fastify.get('/api/reports/semester-kpis', async (request, reply) => {
     try {
       const result = await query(`
@@ -128,7 +127,6 @@ export async function reportRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // GET /api/reports/class-attendance - Class-level attendance summary
   fastify.get('/api/reports/class-attendance', async (request, reply) => {
     try {
       const result = await query(`
@@ -160,7 +158,6 @@ export async function reportRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // GET /api/reports/monthly - Monthly attendance report
   fastify.get<{
     Querystring: { month?: string; student_id?: string; class_id?: string }
   }>('/api/reports/monthly', async (request, reply) => {
@@ -206,7 +203,6 @@ export async function reportRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // GET /api/attendance/history - Attendance history for a student
   fastify.get<{
     Querystring: { student_id?: string; class_id?: string; limit?: string }
   }>('/api/attendance/history', async (request, reply) => {

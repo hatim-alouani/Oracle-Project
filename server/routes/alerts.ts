@@ -2,7 +2,6 @@ import { FastifyInstance } from 'fastify';
 import { query } from '../db';
 
 export async function alertRoutes(fastify: FastifyInstance) {
-  // GET /api/alerts - Fetch all alerts
   fastify.get('/api/alerts', async (request, reply) => {
     try {
       const result = await query(`
@@ -16,7 +15,6 @@ export async function alertRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // GET /api/alerts/active - Fetch active (unresolved) alerts
   fastify.get('/api/alerts/active', async (request, reply) => {
     try {
       const result = await query(`
@@ -41,7 +39,6 @@ export async function alertRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // PUT /api/alerts/:id/resolve - Resolve an alert
   fastify.put<{ Params: { id: string } }>('/api/alerts/:id/resolve', async (request, reply) => {
     try {
       const alertId = parseInt(request.params.id);
@@ -70,7 +67,6 @@ export async function alertRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // PUT /api/alerts/:id/dismiss - Dismiss an alert
   fastify.put<{ Params: { id: string } }>('/api/alerts/:id/dismiss', async (request, reply) => {
     try {
       const alertId = parseInt(request.params.id);

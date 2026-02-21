@@ -11,7 +11,10 @@
     "start": "next start",
     "start:server": "node dist/index.js",
     "lint": "eslint",
-    "add-students": "tsx scripts/add-students.ts"
+    "add-students": "tsx scripts/add-students.ts",
+    "reset": "node scripts/reset-day-check.js",
+    "check": "node scripts/check-status.js",
+    "setup-classes": "node scripts/setup-classes.js"
   },
   "dependencies": {
     "@fastify/cors": "^10.1.0",

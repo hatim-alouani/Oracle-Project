@@ -2,7 +2,6 @@ import { FastifyInstance } from 'fastify';
 import { query } from '../db';
 
 export async function anomalyRoutes(fastify: FastifyInstance) {
-  // GET /api/anomalies - Fetch detected anomalies
   fastify.get('/api/anomalies', async (request, reply) => {
     try {
       const result = await query(`
@@ -27,12 +26,10 @@ export async function anomalyRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // POST /api/anomalies/detect - Scan existing data and generate anomalies
   fastify.post('/api/anomalies/detect', async (request, reply) => {
     try {
       let detected = 0;
 
-      // 1. Detect students with high absences (>=5) who don't already have an unresolved anomaly
       const highAbsence = await query(`
         SELECT s.STUDENT_ID, s.FIRST_NAME, s.LAST_NAME, s.ABSENCE_COUNT
         FROM STUDENTS s
@@ -58,7 +55,6 @@ export async function anomalyRoutes(fastify: FastifyInstance) {
         detected++;
       }
 
-      // 2. Detect students with both absences and lates (combined risk)
       const combinedRisk = await query(`
         SELECT s.STUDENT_ID, s.FIRST_NAME, s.LAST_NAME, s.ABSENCE_COUNT, s.LATE_COUNT
         FROM STUDENTS s
@@ -89,7 +85,6 @@ export async function anomalyRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // PUT /api/anomalies/:id/resolve - Resolve an anomaly
   fastify.put<{ Params: { id: string } }>('/api/anomalies/:id/resolve', async (request, reply) => {
     try {
       const patternId = parseInt(request.params.id);
@@ -101,7 +96,6 @@ export async function anomalyRoutes(fastify: FastifyInstance) {
           [patternId]
         );
       } catch (e: any) {
-        // Fallback if RESOLVED_DATE column doesn't exist yet
         if (e?.message?.includes('RESOLVED_DATE') || e?.errorNum === 904) {
           await query(
             `UPDATE ANOMALY_PATTERNS SET IS_RESOLVED = 1 WHERE PATTERN_ID = :id AND IS_RESOLVED = 0`,

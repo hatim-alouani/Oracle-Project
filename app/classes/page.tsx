@@ -10,7 +10,7 @@ import Card from "@/components/Card";
 import EmptyState from "@/components/EmptyState";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Toast from "@/components/Toast";
-import { fetchClasses, addClass, enrollStudentInClass, fetchStudents } from "@/lib/api";
+import { fetchClasses, addClass, enrollStudentInClass, fetchStudents, deleteClass } from "@/lib/api";
 import { ClassItem, Student } from "@/lib/types";
 
 export default function ClassesPage() {
@@ -19,17 +19,17 @@ export default function ClassesPage() {
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<{ type: "ok" | "err"; msg: string } | null>(null);
 
-  // Add Class Modal
   const [showAddModal, setShowAddModal] = useState(false);
   const [className, setClassName] = useState("");
   const [semester, setSemester] = useState("");
   const [addingClass, setAddingClass] = useState(false);
 
-  // Enroll Student Modal
   const [showEnrollModal, setShowEnrollModal] = useState(false);
   const [selectedClassId, setSelectedClassId] = useState<number | null>(null);
   const [selectedStudentId, setSelectedStudentId] = useState("");
   const [enrolling, setEnrolling] = useState(false);
+
+  const [deleting, setDeleting] = useState<number | null>(null);
 
   async function loadData() {
     setLoading(true);
@@ -91,6 +91,23 @@ export default function ClassesPage() {
     }
   }
 
+  async function handleDeleteClass(classId: number, className: string) {
+    const confirmed = window.confirm(`Are you sure you want to delete "${className}"? This will also remove all student enrollments for this class.`);
+    if (!confirmed) return;
+
+    setDeleting(classId);
+    setToast(null);
+    try {
+      await deleteClass(classId);
+      setToast({ type: "ok", msg: "Class deleted successfully." });
+      await loadData();
+    } catch (e: any) {
+      setToast({ type: "err", msg: e?.message ?? "Failed to delete class" });
+    } finally {
+      setDeleting(null);
+    }
+  }
+
   return (
     <div>
       <SectionTitle
@@ -148,13 +165,21 @@ export default function ClassesPage() {
                 >
                   Enroll Student
                 </Button>
+                <Button
+                  onClick={() => handleDeleteClass(cls.classId, cls.className)}
+                  variant="secondary"
+                  size="sm"
+                  className="w-full mt-2 bg-red-100 hover:bg-red-200 text-red-700"
+                  disabled={deleting === cls.classId}
+                >
+                  {deleting === cls.classId ? "Deleting..." : "Delete Class"}
+                </Button>
               </div>
             </Card>
           ))}
         </div>
       )}
 
-      {/* Add Class Modal */}
       <Modal
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
@@ -194,7 +219,6 @@ export default function ClassesPage() {
         </div>
       </Modal>
 
-      {/* Enroll Student Modal */}
       <Modal
         isOpen={showEnrollModal}
         onClose={() => setShowEnrollModal(false)}

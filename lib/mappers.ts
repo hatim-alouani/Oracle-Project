@@ -1,7 +1,3 @@
-// ============================================================================
-// CANONICAL TYPES - Frontend uses these (camelCase)
-// ============================================================================
-
 export type Student = {
   studentId: number;
   firstName: string;
@@ -70,7 +66,6 @@ export type AnomalyPattern = {
   resolvedDate?: string;
 };
 
-// Analytical Views
 export type MonthlyAttendanceRow = {
   studentId: number;
   firstName: string;
@@ -187,9 +182,6 @@ export function toIsoDateSafe(value: any): string | undefined {
   return undefined;
 }
 
-// ============================================================================
-// MAPPER FUNCTIONS
-// ============================================================================
 
 export function mapStudent(item: any): Student {
   return {

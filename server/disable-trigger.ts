@@ -6,7 +6,6 @@ async function disableTrigger() {
     await initializePool();
     console.log('Connected to database');
 
-    // Disable the problematic trigger
     await query(`ALTER TRIGGER TRG_CONSECUTIVE_ABSENCES DISABLE`);
     console.log('✅ Trigger TRG_CONSECUTIVE_ABSENCES disabled successfully');
 

@@ -25,11 +25,9 @@ import {
   toNumberSafe,
 } from "./mappers";
 
-// Backend API base URL - use relative paths for Next.js API routes
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 const ENDPOINTS = {
-  // Student endpoints
   getStudents: `${API_BASE_URL}/api/students`,
   addStudent: `${API_BASE_URL}/api/students`,
   removeStudent: `${API_BASE_URL}/api/students/remove`,
@@ -37,22 +35,18 @@ const ENDPOINTS = {
   studentLate: `${API_BASE_URL}/api/attendance/late`,
   studentPresent: `${API_BASE_URL}/api/attendance/present`,
   
-  // Class endpoints
   getClasses: `${API_BASE_URL}/api/classes`,
   addClass: `${API_BASE_URL}/api/classes`,
   enrollStudent: `${API_BASE_URL}/api/classes/enroll`,
+  deleteClass: (id: number) => `${API_BASE_URL}/api/classes/${id}`,
   
-  // Alert endpoints
   getAlerts: `${API_BASE_URL}/api/alerts`,
   getActiveAlerts: `${API_BASE_URL}/api/alerts/active`,
   
-  // Anomaly endpoints
   getAnomalies: `${API_BASE_URL}/api/anomalies`,
   
-  // Threshold endpoints
   getThresholds: `${API_BASE_URL}/api/thresholds`,
   
-  // Report & Statistics endpoints
   getStatistics: `${API_BASE_URL}/api/statistics`,
   getRiskAssessment: `${API_BASE_URL}/api/reports/risk-assessment`,
   getSemesterKpis: `${API_BASE_URL}/api/reports/semester-kpis`,
@@ -202,6 +196,15 @@ export async function enrollStudentInClass(payload: { student_id: number; class_
   });
   const data = await safeJson(res);
   if (!res.ok) throw new Error(`POST enroll student failed: ${res.status} ${JSON.stringify(data)}`);
+  return data;
+}
+
+export async function deleteClass(classId: number) {
+  const res = await fetch(ENDPOINTS.deleteClass(classId), {
+    method: "DELETE",
+  });
+  const data = await safeJson(res);
+  if (!res.ok) throw new Error(`DELETE class failed: ${res.status} ${JSON.stringify(data)}`);
   return data;
 }
 

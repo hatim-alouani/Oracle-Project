@@ -18,7 +18,6 @@ export default function AlertsPage() {
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<{ type: "ok" | "err"; msg: string } | null>(null);
 
-  // Filters
   const [filterType, setFilterType] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -74,7 +73,6 @@ export default function AlertsPage() {
         </div>
       )}
 
-      {/* Modern Tabs */}
       <div className="mb-8">
         <div className="inline-flex rounded-xl border border-white/20 bg-white/60 backdrop-blur-xl p-1 shadow-lg">
           <button
@@ -100,7 +98,6 @@ export default function AlertsPage() {
         </div>
       </div>
 
-      {/* Filters */}
       <Card title="Filters" className="mb-6">
         <div className="grid gap-4 md:grid-cols-3">
           <div>

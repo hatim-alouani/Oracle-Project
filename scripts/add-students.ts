@@ -50,51 +50,29 @@ function generateEmail(firstName: string, lastName: string): string {
 }
 
 function getRandomAbsences(): number {
-  // 70% chance of 0-3 absences
-  // 20% chance of 4-5 absences
-  // 10% chance of 6-10 absences
-  const rand = Math.random();
-  if (rand < 0.7) {
-    return Math.floor(Math.random() * 4); // 0-3
-  } else if (rand < 0.9) {
-    return Math.floor(Math.random() * 2) + 4; // 4-5
-  } else {
-    return Math.floor(Math.random() * 5) + 6; // 6-10
-  }
+  // Random absences between 2 and 8
+  return Math.floor(Math.random() * 7) + 2; // 2-8
 }
 
 async function addStudentWithAbsences(firstName: string, lastName: string, absenceDays: number) {
   try {
     const email = generateEmail(firstName, lastName);
     
-    // Check if student already exists
-    const existingStudent = await query(
+    // Insert new student
+    await query(
+      `INSERT INTO STUDENTS (FIRST_NAME, LAST_NAME, EMAIL, DAY_CHECK)
+       VALUES (:firstName, :lastName, :email, 0)`,
+      [firstName, lastName, email]
+    );
+
+    // Get the newly inserted student ID
+    const result = await query(
       `SELECT student_id FROM STUDENTS WHERE LOWER(first_name) = LOWER(:firstName) AND LOWER(last_name) = LOWER(:lastName)`,
       [firstName, lastName]
     );
 
-    let studentId: number;
-
-    if (existingStudent.rows && existingStudent.rows.length > 0) {
-      studentId = (existingStudent.rows[0] as any).STUDENT_ID;
-      console.log(`Student ${firstName} ${lastName} already exists (ID: ${studentId})`);
-    } else {
-      // Insert new student
-      await query(
-        `INSERT INTO STUDENTS (FIRST_NAME, LAST_NAME, EMAIL, DAY_CHECK)
-         VALUES (:firstName, :lastName, :email, 0)`,
-        [firstName, lastName, email]
-      );
-
-      // Get the newly inserted student ID
-      const result = await query(
-        `SELECT student_id FROM STUDENTS WHERE LOWER(first_name) = LOWER(:firstName) AND LOWER(last_name) = LOWER(:lastName)`,
-        [firstName, lastName]
-      );
-
-      studentId = (result.rows![0] as any).STUDENT_ID;
-      console.log(`✓ Added ${firstName} ${lastName} (${email}) - ID: ${studentId}`);
-    }
+    const studentId = (result.rows![0] as any).STUDENT_ID;
+    console.log(`✓ Added ${firstName} ${lastName} (${email}) - ID: ${studentId}`)
 
     // Add absence records (spread over the last 30 days)
     const today = new Date();
@@ -124,6 +102,11 @@ async function addStudentWithAbsences(firstName: string, lastName: string, absen
     }
 
     if (absenceDays > 0) {
+      // Update the ABSENCE_COUNT in STUDENTS table
+      await query(
+        `UPDATE STUDENTS SET ABSENCE_COUNT = :absenceDays WHERE STUDENT_ID = :studentId`,
+        [absenceDays, studentId]
+      );
       console.log(`  → Added ${absenceDays} absence(s)`);
     }
 
@@ -139,6 +122,28 @@ async function main() {
     console.log('🚀 Starting student import...\n');
     await initializePool();
     console.log('✓ Connected to database\n');
+
+    // Delete all existing students and related data
+    console.log('🗑️  Removing all existing students...\n');
+    try {
+      await query('DELETE FROM ATTENDANCE');
+      console.log('  ✓ Cleared attendance records');
+      await query('DELETE FROM ALERTS');
+      console.log('  ✓ Cleared alerts');
+      await query('DELETE FROM STUDENT_CLASSES');
+      console.log('  ✓ Cleared enrollments');
+      try {
+        await query('DELETE FROM ANOMALY_PATTERNS');
+        console.log('  ✓ Cleared anomaly patterns');
+      } catch (e) {
+        // Ignore if table doesn't exist
+      }
+      await query('DELETE FROM STUDENTS');
+      console.log('  ✓ Cleared all students\n');
+    } catch (error) {
+      console.error('Error clearing data:', error);
+      throw error;
+    }
 
     let successCount = 0;
     let errorCount = 0;

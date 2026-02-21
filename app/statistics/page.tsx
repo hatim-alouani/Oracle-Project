@@ -34,7 +34,6 @@ export default function StatisticsPage() {
     const totalLate = students.reduce((sum, s) => sum + (s.lateCount ?? 0), 0);
     const alertCount = students.filter(s => (s.absenceCount ?? 0) >= 5).length;
     
-    // Calculate estimated total days (absences + late = days with issues, assume 20 days per student)
     const estimatedTotalDays = totalStudents * 20;
     const totalIssues = totalAbsences + totalLate;
     const estimatedPresent = Math.max(0, estimatedTotalDays - totalIssues);
@@ -53,7 +52,6 @@ export default function StatisticsPage() {
   }, [students]);
 
   const chartData = useMemo(() => {
-    // Prepare data for each student
     return students.slice(0, 10).map(s => ({
       label: fullName(s).split(' ')[0] || 'Student',
       absences: s.absenceCount ?? 0,
@@ -75,7 +73,6 @@ export default function StatisticsPage() {
         </div>
       ) : null}
 
-      {/* KPIs */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
         <div className="rounded bg-white shadow-soft p-5">
           <div className="text-xs font-bold text-black/60">Total Students</div>
@@ -99,7 +96,6 @@ export default function StatisticsPage() {
         </div>
       </div>
 
-      {/* Attendance Rate */}
       <div className="rounded bg-white shadow-soft p-6 mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -125,14 +121,12 @@ export default function StatisticsPage() {
         </div>
       </div>
 
-      {/* Attendance Trend Chart */}
       <div className="rounded bg-white shadow-soft p-6 mb-6">
         <div className="text-sm font-extrabold mb-2">Attendance Trends (First 10 Students)</div>
         <div className="text-xs text-black/60 mb-4">
           Comparing absences, late arrivals, and estimated present days per student
         </div>
 
-        {/* Legend */}
         <div className="flex flex-wrap gap-4 mb-6 text-xs">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded bg-red-500"></div>
@@ -156,7 +150,6 @@ export default function StatisticsPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Students Breakdown */}
         <div className="lg:col-span-2 rounded bg-white shadow-soft p-6">
           <div className="text-sm font-extrabold mb-4">Student Breakdown</div>
 
@@ -213,7 +206,7 @@ export default function StatisticsPage() {
           </div>
         </div>
 
-        {/* Alerts Panel */}
+
         <div className="lg:col-span-1 rounded bg-white shadow-soft p-6">
           <div className="text-sm font-extrabold mb-4">Active Alerts</div>
           

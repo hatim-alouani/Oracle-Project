@@ -1,9 +1,3 @@
--- Oracle Views for Reporting
--- These views are used by the n8n workflows for analytics and reporting
-
--- =====================================================
--- V_MONTHLY_ATTENDANCE - Monthly attendance summary
--- =====================================================
 CREATE OR REPLACE VIEW V_MONTHLY_ATTENDANCE AS
 SELECT 
     s.STUDENT_ID,
@@ -30,9 +24,6 @@ GROUP BY
     c.CLASS_NAME,
     TO_CHAR(a.SESSION_DATE, 'YYYY-MM');
 
--- =====================================================
--- V_STUDENT_RISK_ASSESSMENT - Student risk analysis
--- =====================================================
 CREATE OR REPLACE VIEW V_STUDENT_RISK_ASSESSMENT AS
 SELECT 
     s.STUDENT_ID,
@@ -79,9 +70,6 @@ SELECT
     END AS RISK_PRIORITY
 FROM STUDENTS s;
 
--- =====================================================
--- V_SEMESTER_KPI - Semester-level Key Performance Indicators
--- =====================================================
 CREATE OR REPLACE VIEW V_SEMESTER_KPI AS
 SELECT 
     c.CLASS_ID,
@@ -114,9 +102,6 @@ GROUP BY
     c.CLASS_NAME,
     c.SEMESTER;
 
--- =====================================================
--- V_DASHBOARD_STATS - Quick stats for dashboard
--- =====================================================
 CREATE OR REPLACE VIEW V_DASHBOARD_STATS AS
 SELECT 
     (SELECT COUNT(*) FROM STUDENTS) AS TOTAL_STUDENTS,
@@ -124,9 +109,3 @@ SELECT
     (SELECT COUNT(*) FROM STUDENTS WHERE ABSENCE_COUNT >= 5) AS AT_RISK_STUDENTS,
     (SELECT COUNT(*) FROM CLASSES) AS TOTAL_CLASSES
 FROM DUAL;
-
--- Grant SELECT permissions on views (adjust user as needed)
--- GRANT SELECT ON V_MONTHLY_ATTENDANCE TO your_app_user;
--- GRANT SELECT ON V_STUDENT_RISK_ASSESSMENT TO your_app_user;
--- GRANT SELECT ON V_SEMESTER_KPI TO your_app_user;
--- GRANT SELECT ON V_DASHBOARD_STATS TO your_app_user;

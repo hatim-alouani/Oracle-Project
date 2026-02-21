@@ -43,6 +43,7 @@ export default function StudentsPage() {
   async function reload() {
     const list = await fetchStudents();
     setStudents(list);
+    setMarkedStudents(new Set());
   }
 
   useEffect(() => {
@@ -89,13 +90,11 @@ export default function StudentsPage() {
     setLoading(true);
     setToast(null);
     try {
-      // Immediately mark as processed to disable buttons
       setMarkedStudents((prev) => new Set(prev).add(student.studentId));
       await markStudentPresent({ student_id: student.studentId });
-      await reload(); // so dayCheck updates immediately
       setToast({ type: "ok", msg: "Student marked as present." });
+      await reload();
     } catch (e: any) {
-      // If failed, remove from marked set
       setMarkedStudents((prev) => {
         const next = new Set(prev);
         next.delete(student.studentId);
@@ -111,13 +110,11 @@ export default function StudentsPage() {
     setLoading(true);
     setToast(null);
     try {
-      // Immediately mark as processed to disable buttons
       setMarkedStudents((prev) => new Set(prev).add(student.studentId));
       await markStudentLate({ student_id: student.studentId });
-      await reload();
       setToast({ type: "ok", msg: "Student marked as late." });
+      await reload();
     } catch (e: any) {
-      // If failed, remove from marked set
       setMarkedStudents((prev) => {
         const next = new Set(prev);
         next.delete(student.studentId);
@@ -133,13 +130,11 @@ export default function StudentsPage() {
     setLoading(true);
     setToast(null);
     try {
-      // Immediately mark as processed to disable buttons
       setMarkedStudents((prev) => new Set(prev).add(student.studentId));
       await markStudentAbsent({ student_id: student.studentId });
-      await reload();
       setToast({ type: "ok", msg: "Student marked as absent." });
+      await reload();
     } catch (e: any) {
-      // If failed, remove from marked set
       setMarkedStudents((prev) => {
         const next = new Set(prev);
         next.delete(student.studentId);

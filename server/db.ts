@@ -1,7 +1,6 @@
 import oracledb from 'oracledb';
 import path from 'path';
 
-// Oracle Database Configuration
 const dbConfig: any = {
   user: process.env.ORACLE_USER || 'admin',
   password: process.env.ORACLE_PASSWORD,
@@ -12,14 +11,11 @@ const dbConfig: any = {
   poolTimeout: 60,
 };
 
-// Configure wallet location for Oracle Cloud
 if (process.env.ORACLE_WALLET_LOCATION) {
   const walletLocation = path.resolve(process.env.ORACLE_WALLET_LOCATION);
   
-  // Set TNS_ADMIN to wallet directory for Oracle Client
   process.env.TNS_ADMIN = walletLocation;
   
-  // For connections with wallet (TLS/mTLS)
   dbConfig.walletLocation = walletLocation;
   
   if (process.env.ORACLE_WALLET_PASSWORD) {
@@ -31,13 +27,8 @@ if (process.env.ORACLE_WALLET_LOCATION) {
   console.log('No wallet configured - using direct connection');
 }
 
-// Note: Oracle Thin mode is used by default (no Oracle Client installation needed)
-// Thin mode supports TLS connections with wallet files
-// If you need Thick mode, uncomment: oracledb.initOracleClient({ libDir: '/path/to/instantclient' });
-
 let pool: oracledb.Pool | null = null;
 
-// Initialize connection pool
 export async function initializePool() {
   try {
     pool = await oracledb.createPool(dbConfig);
@@ -49,7 +40,6 @@ export async function initializePool() {
   }
 }
 
-// Get connection from pool
 export async function getConnection(): Promise<oracledb.Connection> {
   if (!pool) {
     await initializePool();
@@ -57,7 +47,6 @@ export async function getConnection(): Promise<oracledb.Connection> {
   return pool!.getConnection();
 }
 
-// Execute query with auto-commit
 export async function query(sql: string, binds: any[] = [], options: any = {}) {
   let connection: oracledb.Connection | null = null;
   try {
@@ -88,7 +77,6 @@ export async function query(sql: string, binds: any[] = [], options: any = {}) {
   }
 }
 
-// Close pool (for graceful shutdown)
 export async function closePool() {
   if (pool) {
     try {

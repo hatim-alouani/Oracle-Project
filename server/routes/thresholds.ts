@@ -2,7 +2,6 @@ import { FastifyInstance } from 'fastify';
 import { query } from '../db';
 
 export async function thresholdRoutes(fastify: FastifyInstance) {
-  // GET /api/thresholds - Fetch all alert thresholds
   fastify.get('/api/thresholds', async (request, reply) => {
     try {
       const result = await query(`
@@ -16,7 +15,6 @@ export async function thresholdRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // POST /api/thresholds - Create a new threshold
   fastify.post<{
     Body: {
       threshold_type: string;
@@ -45,7 +43,6 @@ export async function thresholdRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // PUT /api/thresholds/:id - Update a threshold
   fastify.put<{
     Params: { id: string };
     Body: {
@@ -85,7 +82,6 @@ export async function thresholdRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // DELETE /api/thresholds/:id - Delete a threshold
   fastify.delete<{ Params: { id: string } }>('/api/thresholds/:id', async (request, reply) => {
     try {
       const thresholdId = parseInt(request.params.id);

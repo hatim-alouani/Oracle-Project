@@ -21,7 +21,6 @@ export default function Page() {
           fetchStudents(),
         ]);
         
-        // Fallback to student count if API doesn't return it
         if (!dashboardData.totalStudents && students.length > 0) {
           dashboardData.totalStudents = students.length;
         }
@@ -62,7 +61,7 @@ export default function Page() {
         </div>
       ) : (
         <>
-          {/* Stats Cards */}
+
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-12 stagger-animation">
             <StatCard
               label="Total Students"
@@ -106,7 +105,6 @@ export default function Page() {
             />
           </div>
 
-          {/* Quick Actions */}
           <div className="mb-12">
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-gray-900">Quick Actions</h2>
@@ -164,7 +162,6 @@ export default function Page() {
             </div>
           </div>
 
-          {/* Recent Anomalies */}
           {stats?.recentAnomalies && stats.recentAnomalies.length > 0 && (
             <>
               <SectionTitle title="Recent Anomalies" subtitle="Latest detected attendance patterns." />

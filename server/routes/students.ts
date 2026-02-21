@@ -2,7 +2,6 @@ import { FastifyInstance } from 'fastify';
 import { query } from '../db';
 
 export async function studentRoutes(fastify: FastifyInstance) {
-  // GET /api/students - Fetch all students
   fastify.get('/api/students', async (request, reply) => {
     try {
       const result = await query(`
@@ -16,7 +15,6 @@ export async function studentRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // POST /api/students - Add a new student
   fastify.post<{
     Body: { first_name: string; last_name: string; email?: string }
   }>('/api/students', async (request, reply) => {
@@ -27,14 +25,12 @@ export async function studentRoutes(fastify: FastifyInstance) {
         return reply.status(400).send({ error: 'First name and last name are required' });
       }
 
-      // Insert student
       await query(
         `INSERT INTO STUDENTS (FIRST_NAME, LAST_NAME, EMAIL)
          VALUES (:first_name, :last_name, :email)`,
         [first_name, last_name, email || null]
       );
 
-      // Get the newly inserted student
       const result = await query(
         `SELECT student_id, first_name, last_name, email
          FROM students
@@ -48,7 +44,6 @@ export async function studentRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // DELETE /api/students - Remove a student
   fastify.post<{
     Body: { student_id: number }
   }>('/api/students/remove', async (request, reply) => {
@@ -59,24 +54,17 @@ export async function studentRoutes(fastify: FastifyInstance) {
         return reply.status(400).send({ error: 'Student ID is required' });
       }
 
-      // Delete related records first to avoid foreign key constraint violations
-      // Delete attendance records
       await query('DELETE FROM ATTENDANCE WHERE student_id = :student_id', [student_id]);
       
-      // Delete alerts
       await query('DELETE FROM ALERTS WHERE student_id = :student_id', [student_id]);
       
-      // Delete student class enrollments
       await query('DELETE FROM STUDENT_CLASSES WHERE student_id = :student_id', [student_id]);
       
-      // Delete anomaly patterns if table exists
       try {
         await query('DELETE FROM ANOMALY_PATTERNS WHERE student_id = :student_id', [student_id]);
       } catch (e) {
-        // Table might not exist or no records
       }
       
-      // Finally delete the student
       await query('DELETE FROM STUDENTS WHERE student_id = :student_id', [student_id]);
 
       return { success: true, message: 'Student removed successfully' };
@@ -86,15 +74,13 @@ export async function studentRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // POST /api/attendance/present - Mark student as present
   fastify.post<{
     Body: { student_id: number; class_id?: number; session_date?: string; status: string }
   }>('/api/attendance/present', async (request, reply) => {
     try {
       const { student_id, class_id } = request.body;
 
-      // Update day_check to 1 (only if it was 0)
-      await query(
+      const updateResult = await query(
         `UPDATE STUDENTS
          SET DAY_CHECK = 1,
              UPDATED_DATE = SYSDATE
@@ -103,7 +89,12 @@ export async function studentRoutes(fastify: FastifyInstance) {
         [student_id]
       );
 
-      // Insert attendance record
+      if (updateResult.rowsAffected === 0) {
+        return reply.status(400).send({ 
+          error: 'Student already marked for today or student not found' 
+        });
+      }
+
       const result = await query(
         `INSERT INTO ATTENDANCE (
            STUDENT_ID,
@@ -126,7 +117,6 @@ export async function studentRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // POST /api/attendance/late - Mark student as late
   fastify.post<{
     Body: { 
       student_id: number; 
@@ -140,8 +130,7 @@ export async function studentRoutes(fastify: FastifyInstance) {
     try {
       const { student_id, class_id, minutes_late, reason } = request.body;
 
-      // Update late_count and day_check
-      await query(
+      const updateResult = await query(
         `UPDATE STUDENTS
          SET LATE_COUNT = LATE_COUNT + 1,
              DAY_CHECK = 1,
@@ -150,6 +139,12 @@ export async function studentRoutes(fastify: FastifyInstance) {
          AND DAY_CHECK = 0`,
         [student_id]
       );
+
+      if (updateResult.rowsAffected === 0) {
+        return reply.status(400).send({ 
+          error: 'Student already marked for today or student not found' 
+        });
+      }
 
       // Insert attendance record
       await query(
@@ -168,7 +163,7 @@ export async function studentRoutes(fastify: FastifyInstance) {
            :reason,
            :class_id
          )`,
-        [student_id, minutes_late || 0, reason || '', class_id || null]
+        [student_id, minutes_late || 1, reason || null, class_id || null]
       );
 
       return { success: true, message: 'Marked as late' };
@@ -178,7 +173,6 @@ export async function studentRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // POST /api/attendance/absent - Mark student as absent
   fastify.post<{
     Body: { 
       student_id: number; 
@@ -191,8 +185,7 @@ export async function studentRoutes(fastify: FastifyInstance) {
     try {
       const { student_id, class_id, reason } = request.body;
 
-      // Update absence_count and day_check
-      await query(
+      const updateResult = await query(
         `UPDATE STUDENTS
          SET ABSENCE_COUNT = ABSENCE_COUNT + 1,
              DAY_CHECK = 1,
@@ -201,6 +194,12 @@ export async function studentRoutes(fastify: FastifyInstance) {
          AND DAY_CHECK = 0`,
         [student_id]
       );
+
+      if (updateResult.rowsAffected === 0) {
+        return reply.status(400).send({ 
+          error: 'Student already marked for today or student not found' 
+        });
+      }
 
       // Insert attendance record
       await query(

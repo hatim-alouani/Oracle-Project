@@ -23,13 +23,11 @@ const fastify = Fastify({
   },
 });
 
-// Register CORS to allow requests from Next.js frontend
 fastify.register(cors, {
   origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   credentials: true,
 });
 
-// Allow empty JSON bodies (for PUT requests like resolve/dismiss)
 fastify.addContentTypeParser('application/json', { parseAs: 'string' }, (req, body, done) => {
   try {
     const str = (body as string || '').trim();
@@ -39,7 +37,6 @@ fastify.addContentTypeParser('application/json', { parseAs: 'string' }, (req, bo
   }
 });
 
-// Health check endpoint
 fastify.get('/health', async (request, reply) => {
   try {
     await query('SELECT 1 FROM DUAL');
@@ -49,7 +46,6 @@ fastify.get('/health', async (request, reply) => {
   }
 });
 
-// Register all routes
 async function registerRoutes() {
   await fastify.register(studentRoutes);
   await fastify.register(classRoutes);
@@ -59,14 +55,11 @@ async function registerRoutes() {
   await fastify.register(thresholdRoutes);
 }
 
-// Start server
 async function start() {
   try {
-    // Initialize Oracle database connection pool
     await initializePool();
     fastify.log.info('Oracle Database connection pool initialized');
     
-    // Setup cron jobs
     setupCronJobs();
     
     await registerRoutes();
@@ -84,7 +77,6 @@ async function start() {
   }
 }
 
-// Graceful shutdown
 process.on('SIGINT', async () => {
   fastify.log.info('Received SIGINT, shutting down gracefully...');
   await closePool();

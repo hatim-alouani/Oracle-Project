@@ -1,0 +1,8 @@
+{
+  "name": "Reset Student Attendance",
+  "version": "1.0.0",
+  "description": "Simple script to reset DAY_CHECK for all students",
+  "scripts": {
+    "reset": "node scripts/reset-day-check.js"
+  }
+}

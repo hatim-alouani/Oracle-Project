@@ -270,17 +270,6 @@ export default function StudentProfilePage() {
                   max={10}
                 />
               </div>
-
-              <div className="rounded border border-black/10 p-4">
-                <div className="text-sm font-extrabold">How alerts work</div>
-                <div className="mt-2 text-sm text-black/70">
-                  Rule: <span className="font-extrabold">absences ≥ 5</span>{" "}
-                  triggers an alert.
-                </div>
-                <div className="mt-2 text-sm text-black/60">
-                  Chart shows estimated daily progression based on current totals.
-                </div>
-              </div>
             </div>
           </div>
 

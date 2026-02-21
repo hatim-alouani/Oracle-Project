@@ -45,7 +45,6 @@ export async function POST(
       const json = await request.json();
       body = JSON.stringify(json);
     } catch {
-      // No body sent (e.g. anomaly detection)
     }
     
     const res = await fetch(url, {
@@ -78,7 +77,6 @@ export async function PUT(
       const json = await request.json();
       body = JSON.stringify(json);
     } catch {
-      // No body sent (e.g. resolve/dismiss actions)
     }
     
     const res = await fetch(url, {
@@ -111,7 +109,6 @@ export async function DELETE(
       const json = await request.json();
       body = JSON.stringify(json);
     } catch {
-      // No body sent
     }
     
     const res = await fetch(url, {

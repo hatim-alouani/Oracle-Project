@@ -2,7 +2,6 @@ import { FastifyInstance } from 'fastify';
 import { query } from '../db';
 
 export async function classRoutes(fastify: FastifyInstance) {
-  // GET /api/classes - Fetch all classes
   fastify.get('/api/classes', async (request, reply) => {
     try {
       const result = await query(`
@@ -16,7 +15,6 @@ export async function classRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // POST /api/classes - Add a new class
   fastify.post<{
     Body: { class_name: string; semester: string }
   }>('/api/classes', async (request, reply) => {
@@ -40,7 +38,6 @@ export async function classRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // POST /api/classes/enroll - Enroll a student in a class
   fastify.post<{
     Body: { student_id: number; class_id: number }
   }>('/api/classes/enroll', async (request, reply) => {
@@ -61,6 +58,28 @@ export async function classRoutes(fastify: FastifyInstance) {
     } catch (error: any) {
       fastify.log.error(error);
       reply.status(500).send({ error: 'Failed to enroll student' });
+    }
+  });
+
+  fastify.delete<{
+    Params: { id: string }
+  }>('/api/classes/:id', async (request, reply) => {
+    try {
+      const classId = parseInt(request.params.id);
+
+      if (isNaN(classId)) {
+        return reply.status(400).send({ error: 'Invalid class ID' });
+      }
+
+      await query(
+        `DELETE FROM CLASSES WHERE CLASS_ID = :classId`,
+        [classId]
+      );
+
+      return { success: true, message: 'Class deleted successfully' };
+    } catch (error: any) {
+      fastify.log.error(error);
+      reply.status(500).send({ error: 'Failed to delete class' });
     }
   });
 }

@@ -1,4 +1,3 @@
-// Re-export canonical types from mappers
 export type {
   Student,
   ClassItem,
@@ -14,7 +13,6 @@ export type {
   DashboardStats,
 } from "./mappers";
 
-// Legacy/compatibility types
 export type AttendanceStatus = "PRESENT" | "ABSENT" | "LATE";
 
 export type AttendanceRow = {

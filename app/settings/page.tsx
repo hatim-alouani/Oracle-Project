@@ -23,7 +23,6 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<{ type: "ok" | "err"; msg: string } | null>(null);
 
-  // Add Modal
   const [showAddModal, setShowAddModal] = useState(false);
   const [newType, setNewType] = useState("");
   const [newValue, setNewValue] = useState("");
@@ -31,7 +30,6 @@ export default function SettingsPage() {
   const [newDescription, setNewDescription] = useState("");
   const [adding, setAdding] = useState(false);
 
-  // Edit Modal
   const [editThreshold, setEditThreshold] = useState<AlertThreshold | null>(null);
   const [editValue, setEditValue] = useState("");
   const [editPeriod, setEditPeriod] = useState("");
@@ -251,7 +249,6 @@ export default function SettingsPage() {
         </Card>
       )}
 
-      {/* Add Threshold Modal */}
       <Modal
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
@@ -301,7 +298,6 @@ export default function SettingsPage() {
         </div>
       </Modal>
 
-      {/* Edit Threshold Modal */}
       <Modal
         isOpen={!!editThreshold}
         onClose={() => setEditThreshold(null)}
